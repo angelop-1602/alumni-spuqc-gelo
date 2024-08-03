@@ -6,6 +6,7 @@ include 'admin/db_connect.php';
         max-height: 10vh;
         max-width: 6vw;
     }
+    
 </style>
 <div class="container-fluid">
     <div class="row h-100 align-items-center justify-content-center text-center">

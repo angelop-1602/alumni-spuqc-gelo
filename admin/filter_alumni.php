@@ -95,13 +95,17 @@ if ($alumni->num_rows > 0) {
     <td>
         <p><b><?php echo $row['mobileNumber']; ?></b></p>
     </td>
+    <td>
+        <p><b><?php echo $row['occupation']; ?></b></p>
+    </td>
+    <td>
+        <p><b><?php echo $row['company']; ?></b></p>
+    </td>
     <td class="text-center">
-        <?php if ($row['currentlyEmployed'] == 1): ?>
-            <span class="badge badge-primary">Employed</span>
-            <p><b><?php echo $row['occupation']; ?></b></p>
-            <p><b><?php echo $row['company']; ?></b></p>
+        <?php if ($row['status'] == 1): ?>
+            <span class="badge badge-primary">Verified</span>
         <?php else: ?>
-            <span class="badge badge-secondary">Unemployed</span>
+            <span class="badge badge-secondary">Not Verified</span>
         <?php endif; ?>
     </td>
     <td class="text-center">
@@ -112,6 +116,6 @@ if ($alumni->num_rows > 0) {
 <?php
     endwhile;
 } else {
-    echo "<tr><td colspan='9' class='text-center'>No data available</td></tr>";
+    echo "<tr><td colspan='11' class='text-center'>No data available</td></tr>";
 }
 ?>

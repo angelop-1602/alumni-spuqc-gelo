@@ -56,7 +56,6 @@
         @media (max-width: 990px) {
             .navbar img {
                 margin-left: 1.5rem;
-                z-index: 10000;
             }
             .navbar-nav {
                 margin-top: 2rem;
@@ -85,7 +84,6 @@
         }
     </style>
 </head>
-<body id="page-top">
     <div class="greentop"></div>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
