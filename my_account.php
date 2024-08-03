@@ -99,6 +99,155 @@ include 'admin/db_connect.php';
                                                 <small><i>Leave this blank if you dont want to change your password</i></small>
                                             </div>
                                         </div>
+
+                                        <!-- Additional Fields -->
+                                        <div class="row form-group">
+                                            <div class="col-md-4">
+                                                <label for="" class="control-label">Student ID</label>
+                                                <input type="text" class="form-control" name="studentId" value="<?php echo $_SESSION['bio']['studentId'] ?>" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="" class="control-label">Home Address</label>
+                                                <input type="text" class="form-control" name="homeAddress" value="<?php echo $_SESSION['bio']['homeAddress'] ?>" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="" class="control-label">Mobile Number</label>
+                                                <input type="tel" class="form-control" name="mobileNumber" value="<?php echo $_SESSION['bio']['mobileNumber'] ?>" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Currently Employed</label>
+                                                <input type="checkbox" id="currentlyEmployed" name="currentlyEmployed" <?php echo $_SESSION['bio']['currentlyEmployed'] ? 'checked' : '' ?>>
+                                                <input type="hidden" id="currentlyEmployedHidden" name="currentlyEmployedHidden" value="<?php echo $_SESSION['bio']['currentlyEmployed'] ? '1' : '0' ?>">
+                                            </div>
+                                        </div>
+                                        <div id="employmentDetails" style="display: <?php echo $_SESSION['bio']['currentlyEmployed'] ? 'block' : 'none' ?>;">
+                                            <div class="row form-group">
+                                                <div class="col-md-6">
+                                                    <label for="" class="control-label">Job Title</label>
+                                                    <input type="text" class="form-control" name="occupation" id="occupation" value="<?php echo $_SESSION['bio']['occupation'] ?>">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="" class="control-label">Company/Organization</label>
+                                                    <input type="text" class="form-control" name="company" id="company" value="<?php echo $_SESSION['bio']['company'] ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">LinkedIn Profile</label>
+                                                <input type="url" class="form-control" name="linkedin" value="<?php echo $_SESSION['bio']['linkedin'] ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Preferred Contact Method</label>
+                                                <select class="custom-select" name="contact_method">
+                                                    <option <?php echo $_SESSION['bio']['contact_method'] == 'Email' ? 'selected' : '' ?>>Email</option>
+                                                    <option <?php echo $_SESSION['bio']['contact_method'] == 'Phone' ? 'selected' : '' ?>>Phone</option>
+                                                    <option <?php echo $_SESSION['bio']['contact_method'] == 'Mail' ? 'selected' : '' ?>>Mail</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <label for="" class="control-label">Interests/Hobbies</label>
+                                                <textarea name="interests" class="form-control" rows="3"><?php echo $_SESSION['bio']['interests'] ?></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Kindergarten - School Attended</label>
+                                                <input type="text" class="form-control" name="kinderSchool" value="<?php echo $_SESSION['bio']['kinderSchool'] ?>" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Year Completed</label>
+                                                <input type="text" class="form-control" name="kinderYear" value="<?php echo $_SESSION['bio']['kinderYear'] ?>" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Grade School - School/s Attended</label>
+                                                <input type="text" class="form-control" name="gradeSchool" value="<?php echo $_SESSION['bio']['gradeSchool'] ?>" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Year Completed</label>
+                                                <input type="text" class="form-control" name="gradeSchoolYear" value="<?php echo $_SESSION['bio']['gradeSchoolYear'] ?>" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Junior High School - School/s Attended</label>
+                                                <input type="text" class="form-control" name="juniorHighSchool" value="<?php echo $_SESSION['bio']['juniorHighSchool'] ?>" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Year Completed</label>
+                                                <input type="text" class="form-control" name="juniorHighSchoolYear" value="<?php echo $_SESSION['bio']['juniorHighSchoolYear'] ?>" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">College - School/s Attended</label>
+                                                <input type="text" class="form-control" name="college" value="<?php echo $_SESSION['bio']['college'] ?>" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Year Graduated</label>
+                                                <input type="text" class="form-control" name="collegeYear" value="<?php echo $_SESSION['bio']['collegeYear'] ?>" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Post-Graduate - School/s Attended</label>
+                                                <input type="text" class="form-control" name="postGrad" value="<?php echo $_SESSION['bio']['postGrad'] ?>">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="" class="control-label">Year Graduated</label>
+                                                <input type="text" class="form-control" name="postGradYear" value="<?php echo $_SESSION['bio']['postGradYear'] ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <div class="col-md-12">
+                                                <label for="" class="control-label">Program/s or Grade Level/s Completed in SPUQC</label>
+                                                <p>Please select at most 6 options:</p>
+                                                <div>
+                                                    <?php
+                                                    $programs = [
+                                                        "Kinder", "Grade School", "Junior High School", "Senior High School",
+                                                        "CBT - BS Business Administration major in Human Resource Mgt",
+                                                        "CBT - BS Business Administration major in Marketing",
+                                                        "CBT - BS Entrepreneurship", "CBT - BS Hospitality Management",
+                                                        "CBT - BS Tourism Management", "CBT - BS Information Technology",
+                                                        "CBT - BS in Accountancy", "CBT - BS in Management Accounting",
+                                                        "CASE - AB Political Science", "CASE - BA Communication",
+                                                        "CASE - Bachelor in Secondary Education major in English",
+                                                        "CASE - Bachelor in Secondary Education major in Integrated Social Studies",
+                                                        "CASE - Bachelor in Inclusive and Special Needs Education",
+                                                        "CASE - AB Religious Education", "CASE - BS Biology",
+                                                        "CASE - BS Nursing", "CASE - BS Psychology",
+                                                        "CASE - BS Psych with HRD Management", "IGS - Master of Arts in Psychology",
+                                                        "IGS - Master of Arts in Values Education", "IGS - Master in Business Administration",
+                                                        "IGS - All Women MBA", "IGS - Teacher Certificate Program",
+                                                        "IGS - Certificate in Values Education"
+                                                    ];
+                                                    foreach ($programs as $program) {
+                                                        $checked = in_array($program, $_SESSION['bio']['programs']) ? 'checked' : '';
+                                                        echo "<label><input type='checkbox' name='programs[]' value='$program' $checked> $program</label><br>";
+                                                    }
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional Fields -->
+
                                         <div id="msg">
                                             
                                         </div>
@@ -138,6 +287,26 @@ include 'admin/db_connect.php';
         reader.readAsDataURL(input.files[0]);
     }
 }
+document.addEventListener('DOMContentLoaded', function() {
+    let employedCheckbox = document.getElementById('currentlyEmployed');
+    let employmentDetails = document.getElementById('employmentDetails');
+    let occupationField = document.getElementById('occupation');
+    let companyField = document.getElementById('company');
+    let employedHidden = document.getElementById('currentlyEmployedHidden');
+
+    employedCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            employmentDetails.style.display = 'block';
+            employedHidden.value = '1';
+        } else {
+            employmentDetails.style.display = 'none';
+            occupationField.value = '';
+            companyField.value = '';
+            employedHidden.value = '0';
+        }
+    });
+});
+
 $('#update_account').submit(function(e){
     e.preventDefault()
     start_load()

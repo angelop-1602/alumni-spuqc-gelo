@@ -1,4 +1,10 @@
-<div class="container" style="margin-top: 8rem;">
+<style>
+    .contact{
+        position: relative;
+        top: 12rem;
+    }
+</style>
+<div class="container contact">
     <div class="row justify-content-center">
         <div class="col-lg-5 d-flex flex-column justify-content-center align-items-start hero-left" style="margin-right: 5rem;">
             <h1 style="font-size: 3rem;">Get in touch!</h1>

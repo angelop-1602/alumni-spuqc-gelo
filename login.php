@@ -8,7 +8,7 @@
 		<div class="form-group">
 			<label for="" class="control-label">Password</label>
 			<input type="password" name="password" required="" class="form-control">
-			<small><a href="index.php?page=signup" id="new_account">Create New Account</a></small>
+			<a href="index.php?page=signup" id="new_account">Create New Account</a>
 		</div>
 		<button class="button btn btn-info btn-sm">Login</button>
 	</form>
