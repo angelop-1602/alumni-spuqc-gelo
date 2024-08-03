@@ -67,7 +67,10 @@ include 'navbar.php'; // Include the navbar file
     position: relative;
     top: 18rem;
   }
-
+.loggedin-contact{
+  position: relative;
+  left: 10rem;
+}
 </style>
 
 <body>
@@ -93,7 +96,7 @@ include 'navbar.php'; // Include the navbar file
           <?php include 'sidebar.php'; ?>
         </div>
       <?php endif; ?>
-      <div class="content">
+      <div class="content .loggedin-contact">
         <?php include "{$page}.php"; ?>
       </div>
     </div>

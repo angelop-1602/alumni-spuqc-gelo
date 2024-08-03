@@ -1,7 +1,8 @@
 <style>
      .side-bar {
     position: relative;
-    right: 18rem;
+    top: 6rem;
+    left: 12rem;
   }
   .side-bar .card {
     padding: 2rem;

@@ -10,10 +10,10 @@ include 'admin/db_connect.php';
         padding: 1em;
     }
     .events-card{
-        width: 50rem;
+        width: 40rem;
         position: relative;
-        left: 70%; /* Center horizontally */
-        transform: translateX(-50%);
+        left: 17rem;
+        top: 12rem;
     }
 </style>
 <?php
@@ -24,6 +24,7 @@ while ($row = $event->fetch_assoc()):
     $desc = strtr(html_entity_decode($row['content']), $trans);
     $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
     ?>
+    <div class="container">
     <div class="events-card">
     <div class="card" data-id="<?php echo $row['id'] ?>">
         <div class='card-img-top'>
@@ -44,6 +45,7 @@ while ($row = $event->fetch_assoc()):
                         More</button>
 
         </div>
+    </div>
     </div>
     </div>
     <br>
