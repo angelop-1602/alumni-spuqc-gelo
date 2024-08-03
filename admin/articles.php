@@ -26,7 +26,7 @@
 			<div class="col-md-12">
 				<div class="card">
 					<div class="card-header">
-						<b>Jobs List</b>
+						<b>Article List</b>
 						<span class="">
 
 							<button class="btn btn-primary btn-block btn-sm col-sm-2 float-right" type="button" id="new_career">
@@ -39,32 +39,32 @@
 							<thead>
 								<tr>
 									<th class="text-center">#</th>
-									<th class="">Company</th>
-									<th class="">Job Title</th>
-									<th class="">Posted By</th>
+									<th class="">Image</th>
+									<th class="">Title</th>
+									<th class="">Content</th>
 									<th class="text-center">Action</th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php 
 								$i = 1;
-								$jobs = $conn->query("SELECT c.*, u.name FROM career c INNER JOIN users u ON u.id = c.user_id ORDER BY id DESC");
+								$jobs = $conn->query("SELECT * from article order by id desc");
 								if ($jobs) {
-									while ($row = $jobs->fetch_assoc()):
+									while($row = $jobs->fetch_assoc()):
+										$imageData = base64_encode($row['img']); // Assuming 'img' is the column storing the LONGBLOB
+										$src = 'data:image/png;base64,'.$imageData; // Adjust the MIME type if necessary
 								?>
 								<tr>
 									
 									<td class="text-center"><?php echo $i++ ?></td>
 									<td class="">
-										 <p><b><?php echo ucwords($row['company']) ?></b></p>
-										 
+										 <img src="<?php echo $src; ?>" alt="Article Image" style="max-width:100px; max-height:150px;">
 									</td>
 									<td class="">
-										 <p><b><?php echo ucwords($row['job_title']) ?></b></p>
-										 
+										 <p><b><?php echo ucwords($row['title']) ?></b></p>
 									</td>
 									<td class="">
-										 <p><b><?php echo ucwords($row['name']) ?></b></p>
+										 <p><b><?php echo ucwords($row['content']) ?></b></p>
 										 
 									</td>
 									<td class="text-center">
@@ -76,7 +76,7 @@
 								<?php 
 									endwhile;
 								} else {
-									echo "<tr><td colspan='5' class='text-center'>No data found. Error: " . $conn->error . "</td></tr>";
+									echo "<tr><td colspan='5' class='text-center'>No Articles found.</td></tr>";
 								}
 								?>
 							</tbody>
@@ -99,7 +99,7 @@
 	}
 	img{
 		max-width:100px;
-		max-height: :150px;
+		max-height:150px;
 	}
 </style>
 <script>
@@ -107,15 +107,15 @@
 		$('table').dataTable()
 	})
 	$('#new_career').click(function(){
-		uni_modal("New Entry","manage_career.php",'mid-large')
+		uni_modal("New Entry","manage_article.php",'mid-large')
 	})
 	
 	$('.edit_career').click(function(){
-		uni_modal("Manage Job Post","manage_career.php?id="+$(this).attr('data-id'),'mid-large')
+		uni_modal("Manage Job Post","manage_article.php?id="+$(this).attr('data-id'),'mid-large')
 		
 	})
 	$('.view_career').click(function(){
-		uni_modal("Job Opportunity","view_jobs.php?id="+$(this).attr('data-id'),'mid-large')
+		uni_modal("Job Opportunity","view_article.php?id="+$(this).attr('data-id'),'mid-large')
 		
 	})
 	$('.delete_career').click(function(){

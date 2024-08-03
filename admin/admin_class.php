@@ -286,51 +286,59 @@ Class Action {
 		if($update)
 			return 1;
 	}
+
 	function save_article() {
-		extract($_POST);
-		$img = array();
-		$fpath = 'assets/uploads/article';
-		$files = is_dir($fpath) ? scandir($fpath) : array();
-		foreach ($files as $val) {
-			if (!in_array($val, array('.', '..'))) {
-				$n = explode('_', $val);
-				$img[$n[0]] = $val;
-			}
-		}
+    extract($_POST);
+    $imageData = null; // Initialize variable for image data
+
+    // Handle image upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+        $imageData = file_get_contents($_FILES['image']['tmp_name']);
+    } elseif (isset($_FILES['image']) && $_FILES['image']['error'] != UPLOAD_ERR_NO_FILE) {
+        return 'File upload error: ' . $_FILES['image']['error'];
+    }
+
+    if (empty($id)) {
+        if ($imageData !== null) {
+            $save = $this->db->prepare("INSERT INTO article (title, content, img) VALUES (?, ?, ?)");
+            if ($save === false) {
+                return 'Prepare failed: (' . $this->db->errno . ') ' . $this->db->error;
+            }
+            $save->bind_param("sss", $title, $content, $imageData);
+        } else {
+            $save = $this->db->prepare("INSERT INTO article (title, content) VALUES (?, ?)");
+            if ($save === false) {
+                return 'Prepare failed: (' . $this->db->errno . ') ' . $this->db->error;
+            }
+            $save->bind_param("ss", $title, $content);
+        }
+    } else {
+        if ($imageData !== null) {
+            $save = $this->db->prepare("UPDATE article SET title = ?, content = ?, img = ? WHERE id = ?");
+            if ($save === false) {
+                return 'Prepare failed: (' . $this->db->errno . ') ' . $this->db->error;
+            }
+            $save->bind_param("sssi", $title, $content, $imageData, $id);
+        } else {
+            $save = $this->db->prepare("UPDATE article SET title = ?, content = ? WHERE id = ?");
+            if ($save === false) {
+                return 'Prepare failed: (' . $this->db->errno . ') ' . $this->db->error;
+            }
+            $save->bind_param("ssi", $title, $content, $id);
+        }
+    }
+
+    if ($save->execute()) {
+        $save->close();
+        return 1;
+    } else {
+        $error = 'Execute failed: (' . $save->errno . ') ' . $save->error;
+        $save->close();
+        return $error;
+    }
+}
 	
-		$folder = "assets/uploads/article/";
-		$file_path = '';
-		if ($_FILES['img']['tmp_name'] != '') {
-			$file = explode('.', $_FILES['img']['name']);
-			$file_extension = end($file);
-			$file_path = $folder . $id . '_img.' . $file_extension;
-			if (is_file($file_path)) {
-				unlink($file_path);
-			}
-		}
-	
-		if (empty($id)) {
-			$save = $this->db->query("INSERT INTO articles (title, content, linkname, img) VALUES ('$title', '$content', '$linkname' , '$file_path')");
-			if ($save) {
-				$id = $this->db->insert_id;
-				if ($_FILES['img']['tmp_name'] != '') {
-					$fname = $id . '_img.' . $file_extension;
-					$move = move_uploaded_file($_FILES['img']['tmp_name'], $folder . $fname);
-					$this->db->query("UPDATE articles SET img = '$folder$fname' WHERE id = $id");
-				}
-			}
-		} else {
-			$save = $this->db->query("UPDATE articles SET title = '$title', content = '$content', linkname = '$linkname', img = '$file_path' WHERE id = $id");
-			if ($save && $_FILES['img']['tmp_name'] != '') {
-				$fname = $id . '_img.' . $file_extension;
-				$move = move_uploaded_file($_FILES['img']['tmp_name'], $folder . $fname);
-				$this->db->query("UPDATE articles SET img = '$folder$fname' WHERE id = $id");
-			}
-		}
-		if ($save) {
-			return 1;
-		}
-	}
+
 	function delete_article() {
 		extract($_POST);
 		$article = $this->db->query("SELECT img FROM articles WHERE id = $id")->fetch_assoc();
@@ -353,16 +361,17 @@ Class Action {
 		if(empty($id)){
 			// echo "INSERT INTO careers set ".$data;
 		$data .= ", user_id = '{$_SESSION['login_id']}' ";
-			$save = $this->db->query("INSERT INTO careers set ".$data);
+			$save = $this->db->query("INSERT INTO career set ".$data);
 		}else{
-			$save = $this->db->query("UPDATE careers set ".$data." where id=".$id);
+			$save = $this->db->query("UPDATE career set ".$data." where id=".$id);
 		}
 		if($save)
 			return 1;
 	}
+
 	function delete_career(){
 		extract($_POST);
-		$delete = $this->db->query("DELETE FROM careers where id = ".$id);
+		$delete = $this->db->query("DELETE FROM career where id = ".$id);
 		if($delete){
 			return 1;
 		}

@@ -76,7 +76,7 @@ header.masthead,header.masthead:before {
         </div>
     </div>
    <?php
-    $event = $conn->query("SELECT c.*,u.name from careers c inner join users u on u.id = c.user_id order by id desc");
+    $event = $conn->query("SELECT c.*,u.name from career c inner join users u on u.id = c.user_id order by id desc");
     while($row = $event->fetch_assoc()):
         $trans = get_html_translation_table(HTML_ENTITIES,ENT_QUOTES);
         unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
