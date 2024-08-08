@@ -48,57 +48,28 @@ header.masthead,header.masthead:before {
     <div class="container-fluid mt-5">
         <div class="row h-100 align-items-center justify-content-center text-center">
             <div class="col-lg-8 align-self-end mb-4 page-title">
-                <h3 class=" ">Job List</h3>
-            <div class="row col-md-12 mb-2 justify-content-center">
-                    <button class="btn btn-primary btn-block col-sm-4" type="button" id="new_career"><i class="fa fa-plus"></i> Post a Job Opportunity</button>
-            </div>   
+                <h3 class=" ">Article List</h3>  
             </div>
             
         </div>
     </div>
-<div class="container mt-3 pt-2">
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" id="filter-field"><i class="fa fa-search"></i></span>
-                      </div>
-                      <input type="text" class="form-control" placeholder="Filter" id="filter" aria-label="Filter" aria-describedby="filter-field">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <button class="btn btn-primary btn-block btn-sm" id="search">Search</button>
-                </div>
-            </div>
-            
-        </div>
     </div>
    <?php
-    $event = $conn->query("SELECT c.*,u.name from career c inner join users u on u.id = c.user_id order by id desc");
+    $event = $conn->query("SELECT * from article order by id desc");
     while($row = $event->fetch_assoc()):
         $trans = get_html_translation_table(HTML_ENTITIES,ENT_QUOTES);
         unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-        $desc = strtr(html_entity_decode($row['description']),$trans);
+        $desc = strtr(html_entity_decode($row['content']),$trans);
         $desc=str_replace(array("<li>","</li>"), array("",","), $desc);
     ?>
     <div class="card job-list" data-id="<?php echo $row['id'] ?>">
         <div class="card-body">
             <div class="row  align-items-center justify-content-center text-center h-100">
                 <div class="">
-                    <h3><b class="filter-txt"><?php echo ucwords($row['job_title']) ?></b></h3>
-                    <div>
-                    <span class="filter-txt"><small><b><i class="fa fa-building"></i> <?php echo ucwords($row['company']) ?></b></small></span>
-                    <span class="filter-txt"><small><b><i class="fa fa-map-marker"></i> <?php echo ucwords($row['location']) ?></b></small></span>
-                    </div>
+                    <h3><b class="filter-txt"><?php echo ucwords($row['title']) ?></b></h3>
                     <hr>
                     <larger class="truncate filter-txt"><?php echo strip_tags($desc) ?></larger>
                     <br>
-                    <hr class="divider"  style="max-width: calc(80%)">
-                    <span class="badge badge-info float-left px-3 pt-1 pb-1">
-                        <b><i>Posted by: <?php echo $row['name'] ?></i></b>
-                    </span>
                     <button class="btn btn-primary float-right read_more" data-id="<?php echo $row['id'] ?>">Read More</button>
                 </div>
             </div>
@@ -115,14 +86,8 @@ header.masthead,header.masthead:before {
 
 
 <script>
-    // $('.card.gallery-list').click(function(){
-    //     location.href = "index.php?page=view_gallery&id="+$(this).attr('data-id')
-    // })
-    $('#new_career').click(function(){
-        uni_modal("New Job Hiring","manage_career.php",'mid-large')
-    })
     $('.read_more').click(function(){
-        uni_modal("Career Opportunity","view_jobs.php?id="+$(this).attr('data-id'),'mid-large')
+        uni_modal("Career Opportunity","view_article.php?id="+$(this).attr('data-id'),'mid-large')
     })
     $('.gallery-img img').click(function(){
         viewer_modal($(this).attr('src'))

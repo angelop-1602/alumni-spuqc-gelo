@@ -2,28 +2,74 @@
 include 'db_connect.php';
 
 // Basic counts
-$total_alumni = $conn->query("SELECT COUNT(*) as count FROM alumnus_bio WHERE status = 1")->fetch_assoc()['count'];
-$total_forum_topics = $conn->query("SELECT COUNT(*) as count FROM forum_topics")->fetch_assoc()['count'];
-$total_jobs = $conn->query("SELECT COUNT(*) as count FROM careers")->fetch_assoc()['count'];
-$total_events = $conn->query("SELECT COUNT(*) as count FROM events WHERE DATE_FORMAT(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "'")->fetch_assoc()['count'];
+$total_alumni_result = $conn->query("SELECT COUNT(*) as count FROM alumnus_bio WHERE status = 1");
+if ($total_alumni_result) {
+    $total_alumni = $total_alumni_result->fetch_assoc()['count'];
+} else {
+    die("Total alumni query failed: " . $conn->error);
+}
+
+$total_forum_topics_result = $conn->query("SELECT COUNT(*) as count FROM forum_topics");
+if ($total_forum_topics_result) {
+    $total_forum_topics = $total_forum_topics_result->fetch_assoc()['count'];
+} else {
+    die("Total forum topics query failed: " . $conn->error);
+}
+
+$total_jobs_result = $conn->query("SELECT COUNT(*) as count FROM career");
+if ($total_jobs_result) {
+    $total_jobs = $total_jobs_result->fetch_assoc()['count'];
+} else {
+    die("Total jobs query failed: " . $conn->error);
+}
+
+$total_events_result = $conn->query("SELECT COUNT(*) as count FROM events WHERE DATE_FORMAT(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "'");
+if ($total_events_result) {
+    $total_events = $total_events_result->fetch_assoc()['count'];
+} else {
+    die("Total events query failed: " . $conn->error);
+}
 
 // Upcoming events
-$upcoming_events = $conn->query("SELECT title, schedule FROM events WHERE DATE_FORMAT(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "' ORDER BY schedule ASC")->fetch_all(MYSQLI_ASSOC);
+$upcoming_events_result = $conn->query("SELECT title, schedule FROM events WHERE DATE_FORMAT(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "' ORDER BY schedule ASC");
+if ($upcoming_events_result) {
+    $upcoming_events = $upcoming_events_result->fetch_all(MYSQLI_ASSOC);
+} else {
+    die("Upcoming events query failed: " . $conn->error);
+}
 
 // Analytics data
-$alumni_by_gender = $conn->query("SELECT gender, COUNT(*) as count FROM alumnus_bio WHERE status = 1 GROUP BY gender")->fetch_all(MYSQLI_ASSOC);
-$alumni_by_batch = $conn->query("SELECT batch, COUNT(*) as count FROM alumnus_bio WHERE status = 1 GROUP BY batch")->fetch_all(MYSQLI_ASSOC);
-$alumni_by_course = $conn->query("SELECT courses.course as course_name, COUNT(*) as count FROM alumnus_bio 
+$alumni_by_gender_result = $conn->query("SELECT gender, COUNT(*) as count FROM alumnus_bio WHERE status = 1 GROUP BY gender");
+if ($alumni_by_gender_result) {
+    $alumni_by_gender = $alumni_by_gender_result->fetch_all(MYSQLI_ASSOC);
+} else {
+    die("Alumni by gender query failed: " . $conn->error);
+}
+
+$alumni_by_batch_result = $conn->query("SELECT batch, COUNT(*) as count FROM alumnus_bio WHERE status = 1 GROUP BY batch");
+if ($alumni_by_batch_result) {
+    $alumni_by_batch = $alumni_by_batch_result->fetch_all(MYSQLI_ASSOC);
+} else {
+    die("Alumni by batch query failed: " . $conn->error);
+}
+
+$alumni_by_course_result = $conn->query("SELECT courses.course as course_name, COUNT(*) as count FROM alumnus_bio 
                                   JOIN courses ON alumnus_bio.course_id = courses.id 
-                                  WHERE alumnus_bio.status = 1 GROUP BY courses.course")->fetch_all(MYSQLI_ASSOC);
+                                  WHERE alumnus_bio.status = 1 GROUP BY courses.course");
+if ($alumni_by_course_result) {
+    $alumni_by_course = $alumni_by_course_result->fetch_all(MYSQLI_ASSOC);
+} else {
+    die("Alumni by course query failed: " . $conn->error);
+}
 
 // Error handling for the new query
 $current_employment_status_result = $conn->query("SELECT currentlyEmployed as employment_status, COUNT(*) as count FROM alumnus_bio 
                                                   WHERE status = 1 GROUP BY currentlyEmployed");
-if (!$current_employment_status_result) {
-    die("Query failed: " . $conn->error);
+if ($current_employment_status_result) {
+    $current_employment_status = $current_employment_status_result->fetch_all(MYSQLI_ASSOC);
+} else {
+    die("Current employment status query failed: " . $conn->error);
 }
-$current_employment_status = $current_employment_status_result->fetch_all(MYSQLI_ASSOC);
 
 // Function to map employment status
 function map_employment_status($status) {
@@ -93,7 +139,7 @@ function safe_json_encode($value){
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row">
+    <div class="row mt-3 ml-3 mr-3">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">

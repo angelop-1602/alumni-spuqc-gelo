@@ -17,7 +17,7 @@
 <div class="side-bar">
           <div class="card position-fixed">
             <ul class="list-group list-group-flush">
-              <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=articles"><i
+              <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=article"><i
                     class="fas fa-newspaper"></i> Articles</a>
                 <hr>
               </li>

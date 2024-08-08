@@ -56,6 +56,7 @@
         @media (max-width: 990px) {
             .navbar img {
                 margin-left: 1.5rem;
+                z-index: 10000;
             }
             .navbar-nav {
                 margin-top: 2rem;
@@ -84,6 +85,7 @@
         }
     </style>
 </head>
+<body id="page-top">
     <div class="greentop"></div>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
@@ -99,7 +101,7 @@
                     <a class="nav-link" href="index.php?page=home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=gallery">Articles</a>
+                    <a class="nav-link" href="index.php?page=articles">Articles</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=courses">Course List</a>
