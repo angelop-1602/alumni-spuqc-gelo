@@ -18,11 +18,13 @@
     display: flex;
     align-items: center;
   }
-  .nav-main{
+
+  .nav-main {
     z-index: 999;
     width: 100%;
     position: fixed;
   }
+
   .navbar .navbar-brand {
     position: absolute;
     top: -30px;
@@ -94,9 +96,11 @@
       width: 10.5rem;
       margin-top: .7rem;
     }
-    .navbar .navbar-brand{
+
+    .navbar .navbar-brand {
       width: 10rem;
     }
+
     .navbar {
       padding: .8rem;
       height: auto;
@@ -113,8 +117,45 @@
     }
   }
 
+  @media (max-width: 414px) {
+    .nav-item {
+      display: block;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .nav-item a {
+      display: block;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .dropdown-menu {
+      position: static;
+      width: 100%;
+      left: 0 !important;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+  }
+
   a {
     font-size: 25px;
+  }
+
+  @media (min-width: 1280px) {
+    .nav-show{
+      display: none;
+    }
+  }
+  @media (max-width: 1280px) {
+    .nav-show{
+      display: block;
+    }
   }
 </style>
 
@@ -142,6 +183,11 @@
           <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=home">Home</a></li>
           <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=about">About</a></li>
           <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=contact">Contact Us</a></li>
+     
+            <li class="nav-item nav-show"><a class="nav-link js-scroll-trigger" href="index.php?page=article">Article</a></li>
+            <li class="nav-item nav-show"><a class="nav-link js-scroll-trigger" href="index.php?page=job">Job</a></li>
+            <li class="nav-item nav-show"><a class="nav-link js-scroll-trigger" href="index.php?page=forums">Forums</a></li>
+       
           <?php if (!isset($_SESSION['login_id'])): ?>
             <li class="nav-item"></li>
           <?php else: ?>

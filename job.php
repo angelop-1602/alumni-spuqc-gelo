@@ -22,11 +22,20 @@ include 'admin/db_connect.php';
         min-height: calc(100%)
     }
 
-   
-
-    
+    .container {
+        position: relative;
+        top: 8rem;
+    }
 </style>
-<div class="container-fluid">
+<div class="container">
+    <div class="container-fluid">
+        <div class="row lign-items-center justify-content-center text-center">
+            <div class="col-lg-8 align-self-end mb-4 page-title">
+                <h3 class=" ">Job List</h3>
+            </div>
+
+        </div>
+    </div>
     <div class="card ">
         <div class="card-body">
             <div class="row">
@@ -45,6 +54,7 @@ include 'admin/db_connect.php';
             </div>
         </div>
     </div>
+    <br>
     <?php
     $articles = $conn->query("SELECT * from articles order by id desc ");
     while ($row = $articles->fetch_assoc()):
@@ -72,8 +82,8 @@ include 'admin/db_connect.php';
                     </div>
                 </div>
             </div>
-            <br>
         </div>
+        <br>
     <?php endwhile; ?>
 
 </div>

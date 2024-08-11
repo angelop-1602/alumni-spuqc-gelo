@@ -15,6 +15,22 @@ include 'admin/db_connect.php';
         left: 17rem;
         top: 12rem;
     }
+    @media only screen and (max-width: 768px) {
+
+    }
+
+    @media only screen and (max-width: 768px) {
+        .events-card {
+            width: 100%; /* Adjust width for smaller screens */
+            left: 0; /* Reset left position */
+            top: 10rem; /* Reset top position */
+        }
+    }
+    @media only screen and (max-width: 425px) {
+        .events-card {
+            top: 7rem;
+        }
+    }
 </style>
 <?php
 $event = $conn->query("SELECT * FROM events where date_format(schedule,'%Y-%m%-d') >= '" . date('Y-m-d') . "' order by unix_timestamp(schedule) asc");
