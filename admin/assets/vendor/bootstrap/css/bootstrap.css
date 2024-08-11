@@ -2573,13 +2573,12 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #005e26;
 }
 
 .btn-primary:hover {
   color: #fff;
-  background-color: #0069d9;
+  background-color: transparent;
   border-color: #0062cc;
 }
 
@@ -5179,7 +5178,7 @@ a.badge-secondary:focus, a.badge-secondary.focus {
 
 .badge-success {
   color: #fff;
-  background-color: #28a745;
+  background-color: #005E26;
 }
 
 a.badge-success:hover, a.badge-success:focus {
@@ -5194,7 +5193,7 @@ a.badge-success:focus, a.badge-success.focus {
 
 .badge-info {
   color: #fff;
-  background-color: #17a2b8;
+  background-color: #005E26;
 }
 
 a.badge-info:hover, a.badge-info:focus {

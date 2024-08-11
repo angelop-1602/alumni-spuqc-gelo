@@ -210,7 +210,7 @@ function safe_json_encode($value){
                         <div class="col-md-3">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5>Alumni by Course</h5>
+                                    <h5>Alumni by Program</h5>
                                     <div class="chart-container">
                                         <canvas id="alumniByCourseChart"></canvas>
                                     </div>

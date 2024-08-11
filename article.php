@@ -43,7 +43,7 @@ include 'admin/db_connect.php';
 
     .container {
         position: relative;
-        top: 8rem;
+        top: 12rem;
     }
 </style>
 <div class="container">

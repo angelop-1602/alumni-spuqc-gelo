@@ -91,7 +91,7 @@ include 'navbar.php'; // Include the navbar file
     </div>
   <?php else: ?>
     <div class="main-content">
-      <?php if (!in_array($page, ['about', 'contact', 'article', 'forum', 'careers'])): ?>
+      <?php if (!in_array($page, ['about', 'contact', 'article', 'forum', 'careers', 'events', 'view_events', 'view_event', 'view_articles', 'view_forum', 'view_jobs'])): ?>
         <div class="side-bar">
           <?php include 'sidebar.php'; ?>
         </div>

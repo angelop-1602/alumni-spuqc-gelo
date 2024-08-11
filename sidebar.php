@@ -12,6 +12,7 @@
     .side-bar a {
         width: 11.8rem;
         font-size: 1.6rem;
+        color: black;
     }
 
     @media only screen and (max-width: 1280px) {

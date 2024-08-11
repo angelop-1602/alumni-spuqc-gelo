@@ -1641,10 +1641,8 @@ a.nav-item:hover, .nav-item.active {
     color: #fffafa;
 }
 main#view-panel{
-  margin-left: 250px; 
-  width:calc(100% - 250px);
-  margin-top: 3.5rem;
-  padding: .5em
+  position: relative;
+  top: -4rem;
 }
 .toast{
   display: none;

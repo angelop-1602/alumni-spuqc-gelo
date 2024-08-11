@@ -37,6 +37,10 @@ if (isset($_GET['id'])) {
     #uni_modal .modal-footer.display {
         display: block;
     }
+    .container {
+        position: relative;
+        top: 12rem;
+    }
 </style>
 <script>
     $('.text-jqte').jqte();

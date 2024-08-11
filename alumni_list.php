@@ -64,7 +64,7 @@ span.hightlight{
 	margin:unset;
 }
 </style>
-            <div class="container-fluid mt-5">
+            <div class="container">
                 <div class="row h-100 align-items-center justify-content-center text-center">
                     <div class="col-lg-8 align-self-end mb-4 page-title">
                         <h3 class=" ">Alumnus/Alumnae List</h3>

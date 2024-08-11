@@ -57,6 +57,10 @@ while($row = $commits->fetch_assoc()){
 		max-height: 50vh;
 		cursor :pointer;
 	}
+	.container {
+        position: relative;
+        top: 12rem;
+    }
 	<?php if(!empty($banner)): ?>
 	 header.masthead {
 	    background: url(admin/assets/uploads/<?php echo $banner ?>);
@@ -65,7 +69,7 @@ while($row = $commits->fetch_assoc()){
 	}
 	<?php endif; ?>
 </style>
-	<div class="container-fluid mt-5">
+	<div class="container">
                 <div class="row h-100 align-items-center justify-content-center text-center">
                     <div class="col-lg-4 align-self-end mb-4 pt-2 page-title">
                     	<h4 class="text-center  "><b><?php echo ucwords($title) ?></b></h4>
