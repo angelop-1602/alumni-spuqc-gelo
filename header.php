@@ -15,7 +15,6 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="admin/assets/vendor/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
         <link type="text/css" rel="stylesheet" href="admin/assets/css/jquery-te-1.4.0.css">
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
@@ -29,5 +28,27 @@
 
     <script type="text/javascript" src="admin/assets/js/jquery.datetimepicker.full.min.js"></script>
     <script type="text/javascript" src="admin/assets/js/jquery-te-1.4.0.min.js" charset="utf-8"></script>
+    <style>
+    @font-face {
+        font-family: 'Old English MT';  /* The name you want to use for the font */
+        src: url('fonts/oldenglishtextmt.ttf') format('truetype');  /* Specify the font formats */
+        font-weight: normal;
+        font-style: normal;
+}
+        .card {
+            width: 25rem;
+            border: none;
+            box-shadow: 0 2px 2px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
+            transition: 0.2s ease;
+        }
 
+        .card:hover{
+            background-color: #E4E6E9;
+            transition: 0.075s ease;
+        }
 
+        .profilePictureThumbnail{
+            width: 100px;
+            border-radius: 50%;
+        }
+    </style>

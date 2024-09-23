@@ -12,7 +12,7 @@ ob_end_flush();
 ?>
 <?php
 include 'header.php';
-include 'navbar.php'; // Include the navbar file
+include 'navbar.php';
 ?>
 <style>
   body {
@@ -20,142 +20,49 @@ include 'navbar.php'; // Include the navbar file
     z-index: -999;
   }
 
-  #viewer_modal .btn-close {
-    position: absolute;
-    z-index: 999999;
-    background: unset;
-    color: white;
-    border: unset;
-    font-size: 27px;
-    top: 0;
-  }
-
-  #viewer_modal .modal-dialog {
-    width: 80%;
-    max-width: unset;
-    height: calc(90%);
-    max-height: unset;
-  }
-
-  #viewer_modal .modal-content {
-    background: black;
-    border: unset;
-    height: calc(100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #viewer_modal img,
-  #viewer_modal video {
-    max-height: calc(100%);
-    max-width: calc(100%);
-  }
-
-  a.jqte_tool_label.unselectable {
-    height: auto !important;
-    min-width: 4rem !important;
-    padding: 5px
-  }
-
-  .list-group .nav-item {
-    list-style-type: none;
-    text-decoration: none !important;
-  }
-
-  .not_member {
+  .loggedin-contact {
     position: relative;
-    top: 18rem;
+    left: 10rem;
   }
-.loggedin-contact{
-  position: relative;
-  left: 10rem;
-}
 </style>
 
 <body>
-
-  <?php
-  $page = isset($_GET['page']) ? $_GET['page'] : "home";
-  if (!isset($_SESSION['login_id'])): ?>
-    <div class="main-content">
-      <?php if (in_array($page, ['about', 'contact', 'signup'])): ?>
-        <div class="content">
-          <?php include "{$page}.php"; ?>
-        </div>
-      <?php else: ?>
-        <div class="content">
-          <?php include "not_member.php"; ?>
-        </div>
-      <?php endif; ?>
-    </div>
-  <?php else: ?>
-    <div class="main-content">
-      <?php if (!in_array($page, ['about', 'contact', 'article', 'forum', 'careers', 'events', 'view_events', 'view_event', 'view_articles', 'view_forum', 'view_jobs'])): ?>
-        <div class="side-bar">
-          <?php include 'sidebar.php'; ?>
-        </div>
-      <?php endif; ?>
-      <div class="content .loggedin-contact">
-        <?php include "{$page}.php"; ?>
+  <div class="main-content">
+    <?php if (!isset($_SESSION['login_id'])): ?>
+      <div class="content">
+        <!-- Content for not logged-in users -->
+        <?php include "not_member.php"; ?>
       </div>
-    </div>
-  <?php endif; ?>
-  <div class="modal fade" id="confirm_modal" role='dialog'>
+    <?php else: ?>
+      <div class="content loggedin-contact">
+        <?php 
+          $page = isset($_GET['page']) ? $_GET['page'] : "home"; 
+          include "{$page}.php"; 
+        ?>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Sample button to trigger login prompt if not logged in -->
+  <button class="btn btn-primary login-action">Click Me!</button>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="uni_modal" role='dialog'>
     <div class="modal-dialog modal-md" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Confirmation</h5>
+          <h5 class="modal-title">Login Required</h5>
         </div>
         <div class="modal-body">
-          <div id="delete_content"></div>
+          <!-- Login form content (login.php can be included here) -->
+          <?php include 'login.php'; ?>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id='confirm' onclick="">Continue</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" id="uni_modal" role='dialog'>
-    <div class="modal-dialog modal-md" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title"></h5>
-        </div>
-        <div class="modal-body">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id='submit'
-            onclick="$('#uni_modal form').submit()">Save</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="uni_modal_right" role='dialog'>
-    <div class="modal-dialog modal-full-height  modal-md" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title"></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="fa fa-arrow-righ t"></span>
-          </button>
-        </div>
-        <div class="modal-body">
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="viewer_modal" role='dialog'>
-    <div class="modal-dialog modal-md" role="document">
-      <div class="modal-content">
-        <button type="button" class="btn-close" data-dismiss="modal"><span class="fa fa-times"></span></button>
-        <img src="" alt="">
-      </div>
-    </div>
-  </div>
-  <div id="preloader"></div>
 
   <?php include ('footer.php') ?>
 </body>
@@ -163,11 +70,19 @@ include 'navbar.php'; // Include the navbar file
 <script type="text/javascript">
   $(document).ready(function () {
     console.log("jQuery version:", $.fn.jquery);
-    $('.login').click(function () {
-      uni_modal("Login", 'login.php');
+
+    // Trigger login modal if user clicks a button and is not logged in
+    $('.login-action').click(function () {
+      <?php if (!isset($_SESSION['login_id'])): ?>
+        // Show login modal
+        $('#uni_modal').modal('show');
+      <?php else: ?>
+        // Action for logged-in users
+        alert('You are already logged in!');
+      <?php endif; ?>
     });
   });
 </script>
-<?php $conn->close(); ?>
 
+<?php $conn->close(); ?>
 </html>

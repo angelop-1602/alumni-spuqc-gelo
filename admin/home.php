@@ -3,82 +3,40 @@ include 'db_connect.php';
 
 // Basic counts
 $total_alumni_result = $conn->query("SELECT COUNT(*) as count FROM alumnus_bio WHERE status = 1");
-if ($total_alumni_result) {
-    $total_alumni = $total_alumni_result->fetch_assoc()['count'];
-} else {
-    die("Total alumni query failed: " . $conn->error);
-}
+$total_alumni = $total_alumni_result ? $total_alumni_result->fetch_assoc()['count'] : 0;
 
 $total_forum_topics_result = $conn->query("SELECT COUNT(*) as count FROM forum_topics");
-if ($total_forum_topics_result) {
-    $total_forum_topics = $total_forum_topics_result->fetch_assoc()['count'];
-} else {
-    die("Total forum topics query failed: " . $conn->error);
-}
+$total_forum_topics = $total_forum_topics_result ? $total_forum_topics_result->fetch_assoc()['count'] : 0;
 
 $total_jobs_result = $conn->query("SELECT COUNT(*) as count FROM career");
-if ($total_jobs_result) {
-    $total_jobs = $total_jobs_result->fetch_assoc()['count'];
-} else {
-    die("Total jobs query failed: " . $conn->error);
-}
+$total_jobs = $total_jobs_result ? $total_jobs_result->fetch_assoc()['count'] : 0;
 
 $total_events_result = $conn->query("SELECT COUNT(*) as count FROM events WHERE DATE_FORMAT(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "'");
-if ($total_events_result) {
-    $total_events = $total_events_result->fetch_assoc()['count'];
-} else {
-    die("Total events query failed: " . $conn->error);
-}
+$total_events = $total_events_result ? $total_events_result->fetch_assoc()['count'] : 0;
 
 // Upcoming events
 $upcoming_events_result = $conn->query("SELECT title, schedule FROM events WHERE DATE_FORMAT(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "' ORDER BY schedule ASC");
-if ($upcoming_events_result) {
-    $upcoming_events = $upcoming_events_result->fetch_all(MYSQLI_ASSOC);
-} else {
-    die("Upcoming events query failed: " . $conn->error);
-}
+$upcoming_events = $upcoming_events_result ? $upcoming_events_result->fetch_all(MYSQLI_ASSOC) : [];
 
 // Analytics data
 $alumni_by_gender_result = $conn->query("SELECT gender, COUNT(*) as count FROM alumnus_bio WHERE status = 1 GROUP BY gender");
-if ($alumni_by_gender_result) {
-    $alumni_by_gender = $alumni_by_gender_result->fetch_all(MYSQLI_ASSOC);
-} else {
-    die("Alumni by gender query failed: " . $conn->error);
-}
+$alumni_by_gender = $alumni_by_gender_result ? $alumni_by_gender_result->fetch_all(MYSQLI_ASSOC) : [];
 
 $alumni_by_batch_result = $conn->query("SELECT batch, COUNT(*) as count FROM alumnus_bio WHERE status = 1 GROUP BY batch");
-if ($alumni_by_batch_result) {
-    $alumni_by_batch = $alumni_by_batch_result->fetch_all(MYSQLI_ASSOC);
-} else {
-    die("Alumni by batch query failed: " . $conn->error);
-}
+$alumni_by_batch = $alumni_by_batch_result ? $alumni_by_batch_result->fetch_all(MYSQLI_ASSOC) : [];
 
 $alumni_by_course_result = $conn->query("SELECT courses.course as course_name, COUNT(*) as count FROM alumnus_bio 
                                   JOIN courses ON alumnus_bio.course_id = courses.id 
                                   WHERE alumnus_bio.status = 1 GROUP BY courses.course");
-if ($alumni_by_course_result) {
-    $alumni_by_course = $alumni_by_course_result->fetch_all(MYSQLI_ASSOC);
-} else {
-    die("Alumni by course query failed: " . $conn->error);
-}
+$alumni_by_course = $alumni_by_course_result ? $alumni_by_course_result->fetch_all(MYSQLI_ASSOC) : [];
 
-// Error handling for the new query
 $current_employment_status_result = $conn->query("SELECT currentlyEmployed as employment_status, COUNT(*) as count FROM alumnus_bio 
                                                   WHERE status = 1 GROUP BY currentlyEmployed");
-if ($current_employment_status_result) {
-    $current_employment_status = $current_employment_status_result->fetch_all(MYSQLI_ASSOC);
-} else {
-    die("Current employment status query failed: " . $conn->error);
-}
-
-// Function to map employment status
-function map_employment_status($status) {
-    return $status == 1 ? 'Employed' : 'Unemployed';
-}
+$current_employment_status = $current_employment_status_result ? $current_employment_status_result->fetch_all(MYSQLI_ASSOC) : [];
 
 // Map the employment status
 foreach ($current_employment_status as &$status) {
-    $status['employment_status'] = map_employment_status($status['employment_status']);
+    $status['employment_status'] = $status['employment_status'] == 1 ? 'Employed' : 'Unemployed';
 }
 
 // Function to safely encode JSON
@@ -93,53 +51,28 @@ function safe_json_encode($value){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alumni Analytics Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        span.float-right.summary_icon {
+        .summary_icon {
             font-size: 3rem;
             position: absolute;
             right: 1rem;
             color: #ffffff96;
-        }
-        .imgs {
-            margin: .5em;
-            max-width: calc(100%);
-            max-height: calc(100%);
-        }
-        .imgs img {
-            max-width: calc(100%);
-            max-height: calc(100%);
-            cursor: pointer;
-        }
-        #imagesCarousel, #imagesCarousel .carousel-inner, #imagesCarousel .carousel-item {
-            height: 60vh !important;
-            background: black;
-        }
-        #imagesCarousel .carousel-item.active {
-            display: flex !important;
-        }
-        #imagesCarousel .carousel-item-next {
-            display: flex !important;
-        }
-        #imagesCarousel .carousel-item img {
-            margin: auto;
-        }
-        #imagesCarousel img {
-            width: auto !important;
-            height: auto !important;
-            max-height: calc(100%) !important;
-            max-width: calc(100%) !important;
         }
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
+        body {
+            background-color: #f8f9fa;
+        }
     </style>
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row mt-3 ml-3 mr-3">
+    <div class="row mt-3">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
@@ -147,7 +80,7 @@ function safe_json_encode($value){
                     <hr>
                     <div class="row">
                         <!-- Basic Metrics -->
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card bg-primary text-white">
                                 <div class="card-body">
                                     <span class="float-right summary_icon"><i class="fa fa-users"></i></span>
@@ -156,7 +89,7 @@ function safe_json_encode($value){
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card bg-info text-white">
                                 <div class="card-body">
                                     <span class="float-right summary_icon"><i class="fa fa-comments"></i></span>
@@ -165,7 +98,7 @@ function safe_json_encode($value){
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card bg-warning text-white">
                                 <div class="card-body">
                                     <span class="float-right summary_icon"><i class="fa fa-briefcase"></i></span>
@@ -174,8 +107,8 @@ function safe_json_encode($value){
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card bg-primary text-white">
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-success text-white">
                                 <div class="card-body">
                                     <span class="float-right summary_icon"><i class="fa fa-calendar-day"></i></span>
                                     <h4><b><?php echo $total_events; ?></b></h4>
@@ -187,7 +120,7 @@ function safe_json_encode($value){
 
                     <!-- Advanced Metrics -->
                     <div class="row mt-4">
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card">
                                 <div class="card-body">
                                     <h5>Alumni by Gender</h5>
@@ -197,7 +130,7 @@ function safe_json_encode($value){
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card">
                                 <div class="card-body">
                                     <h5>Alumni by Batch</h5>
@@ -207,7 +140,7 @@ function safe_json_encode($value){
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card">
                                 <div class="card-body">
                                     <h5>Alumni by Program</h5>
@@ -217,7 +150,7 @@ function safe_json_encode($value){
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card">
                                 <div class="card-body">
                                     <h5>Currently Employed</h5>
@@ -230,7 +163,7 @@ function safe_json_encode($value){
                     </div>
 
                     <div class="row mt-4">
-                        <div class="col-md-12 mt-4">
+                        <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
                                     <h5>Upcoming Events</h5>
@@ -251,6 +184,8 @@ function safe_json_encode($value){
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // Alumni by Gender Chart

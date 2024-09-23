@@ -1,133 +1,145 @@
+<?php
+include 'header.php';
+?>
 <style>
-        body {
-            background-color: #f8f9fa;
-            color: #343a40;
-            font-family: 'Arial', sans-serif;
-        }
-        .greentop {
-            width: 100%;
-            height: 3.75rem;
-            background-color: #005b00;
-        }
-        .navbar {
-            width: 100%;
-            background-color: #ffffff;
-            color: #343a40;
-            padding: 1.4rem 1.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
-            transition: height 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
-        .navbar .navbar-brand {
-            position: absolute;
-            top: -30px;     
-            left: 20px;
-            display: flex;
-            align-items: center;
-        }
-        .navbar img {
-            position: relative;
-            margin-left: 10rem;
-            top: .2rem;
-            width: 20rem;
-        }
-        .navbar .nav-link {
-            padding: 10px 20px;
-            text-decoration: none;
-            font-size: 18px;
-            color: #343a40;
-            display: inline-block;
-            transition: all 0.3s ease;
-            border-radius: 4px;
-            background-color: #ffffff;
-            margin: 0 10px;
-        }
-        .navbar-nav-center {
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-        }
-        .content {
-            padding: 20px;
-            margin-top: 60px;
-        }
-        @media (max-width: 990px) {
-            .navbar img {
-                margin-left: 1.5rem;
-                z-index: 10000;
-            }
-            .navbar-nav {
-                margin-top: 2rem;
-            }
-            .navbar {
-                padding: 2rem 1.5rem;
-                height: auto;
-            }
-        }
-        @media (max-width: 576px) {
-            .navbar img {
-                width: 12rem;
-                margin-left: 2rem;
-                top: 14px;
-            }
-            .navbar {
-                padding: .8rem;
-                height: auto;
-            }
-            .navbar-nav {
-                margin-top: 1.2rem;
-            }
-            .greentop {
-                height: 2rem;
-            }
-        }
-    </style>
-</head>
-<body id="page-top">
-    <div class="greentop"></div>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="./">
-            <img src="assets/img/logo.png" alt="logo">
+  .navbar {
+    width: 100%;
+    height: auto;
+    background-color: #ffffff;
+    color: #343a40;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .container-fluid {
+    width: 100%;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .navbar img {
+    width: 80px;
+    margin-right: 15px;
+  }
+
+  .navbar h3 {
+    margin: 0;
+  }
+
+  .navbar .title-section h3:first-child {
+    font-family: 'Old English MT';
+    font-size: 26px;
+    color: #28a745;
+  }
+
+  .navbar .title-section h3:last-child {
+    font-family: 'Montserrat';
+    font-size: 18px;
+    color: #28a745;
+  }
+
+  .navbar-toggler {
+    border: none;
+  }
+
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-nav .nav-item {
+    margin: 0 10px;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 18px;
+    color: #343a40;
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: #28a745;
+  }
+
+  @media (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .title-section {
+      margin: 10px 0;
+    }
+
+    .navbar-nav {
+      flex-direction: column;
+    }
+
+    .nav-item {
+      margin: 5px 0;
+    }
+  }
+</style>
+
+<nav class="navbar sticky-top navbar-expand-md mb-5">
+  <div class="container-fluid">
+    <div class="row align-items-center w-50">
+      <!-- Logo Section -->
+      <div class="col-md-2 text-center">
+        <a href="main_menu.php">
+          <img src="assets/img/Logo.png" alt="Logo" class="img-fluid">
         </a>
-        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=home">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=articles">Articles</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=courses">Course List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=alumni">Alumni List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=jobs">Jobs</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=events">Events</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=forums">Forum</a>
-                </li>
-                <?php if($_SESSION['login_type'] == 1): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?page=users">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?page=site_settings">System Settings</a>
-                    </li>
-                <?php endif; ?>
-            </ul>
-            <div class="float-right">
+      </div>
+
+      <!-- Title Section -->
+      <div class="col-md-8 text-center title-section">
+        <h3>St. Paul University Quezon City</h3>
+        <h3>ALUMNI TRACKING SYSTEM</h3>
+      </div>
+
+      <!-- Empty for future content -->
+      <div class="col-md-2 text-center"></div>
+    </div>
+
+    <!-- Navbar Menu Section -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item mx-1">
+          <a class="nav-link px-2" href="index.php?page=home">Home</a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link px-2" href="index.php?page=about">About</a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link px-2" href="index.php?page=contact">Contact Us</a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link px-2" href="index.php?page=article">Article</a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link px-2" href="index.php?page=careers">Job</a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link px-2" href="index.php?page=forum">Forums</a>
+        </li>
+      </ul>
+    </div>
+    <div class="float-right">
                 <div class="dropdown mr-4">
                     <a href="#" class="text-dark dropdown-toggle" id="account_settings" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $_SESSION['login_name'] ?> </a>
                     <div class="dropdown-menu" aria-labelledby="account_settings">
@@ -137,7 +149,9 @@
                 </div>
             </div>
         </div>
-    </nav>
+  </div>
+</nav>
+
 
     <div class="content">
         <!-- Page Content goes here -->
