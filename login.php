@@ -15,9 +15,6 @@
 </div>
 
 <style>
-	#uni_modal .modal-footer{
-		display:;
-	}
 </style>
 
 <script>

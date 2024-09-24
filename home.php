@@ -2,93 +2,169 @@
 include 'admin/db_connect.php';
 ?>
 <style>
-    #portfolio .img-fluid {
-        width: calc(100%);
-        height: 30vh;
-        z-index: -1;
-        position: relative;
-        padding: 1em;
+    body {
+        background-color: #f8f9fa;
     }
-    .events-card{
-        width: 40rem;
-        position: relative;
-        left: 17rem;
-        top: 12rem;
+    .feed-card {
+        margin-bottom: 2rem;
+        border: none;
     }
-    @media only screen and (max-width: 768px) {
-
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: white;
     }
-
-    @media only screen and (max-width: 768px) {
-        .events-card {
-            width: 100%; /* Adjust width for smaller screens */
-            left: 0; /* Reset left position */
-            top: 10rem; /* Reset top position */
-        }
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
-    @media only screen and (max-width: 425px) {
-        .events-card {
-            top: 7rem;
-        }
+    .card img {
+        height: auto;
+        width: 100%;
+        object-fit: cover;
+    }
+    .card-body {
+        padding: 15px;
+    }
+    .card-body h3 {
+        font-size: 1.25rem;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .card-body p {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .truncate {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .feed-title {
+        padding: 1rem 0;
+        font-size: 1.75rem;
+        font-weight: bold;
+        text-align: center;
+        color: #343a40;
     }
 </style>
-<?php
-$event = $conn->query("SELECT * FROM events where date_format(schedule,'%Y-%m%-d') >= '" . date('Y-m-d') . "' order by unix_timestamp(schedule) asc");
-while ($row = $event->fetch_assoc()):
-    $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-    unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-    $desc = strtr(html_entity_decode($row['content']), $trans);
-    $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
-    ?>
-    <div class="container">
-    <div class="events-card">
-    <div class="card" data-id="<?php echo $row['id'] ?>">
-        <div class='card-img-top'>
-            <?php if (!empty($row['banner'])): ?>
-                <img src="admin/assets/uploads/<?php echo ($row['banner']) ?>" alt="">
-            <?php endif; ?>
+
+<div class="container mt-5">
+    <!-- Feed Title -->
+    <div class="feed-title">Latest Updates</div>
+
+    <!-- Events Section -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <?php
+            $event = $conn->query("SELECT * FROM events WHERE date_format(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "' ORDER BY unix_timestamp(schedule) ASC");
+            while ($row = $event->fetch_assoc()):
+                $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+                unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+                $desc = strtr(html_entity_decode($row['content']), $trans);
+                $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+            ?>
+            <div class="feed-card">
+                <div class="card" data-id="<?php echo $row['id'] ?>">
+                    <?php if (!empty($row['banner'])): ?>
+                    <img src="admin/assets/uploads/<?php echo $row['banner'] ?>" alt="Event Banner" class="img-fluid">
+                    <?php endif; ?>
+                    <div class="card-body">
+                        <h3 class="filter-txt"><?php echo ucwords($row['title']) ?></h3>
+                        <p><i class="fa fa-calendar"></i> <?php echo date("F d, Y h:i A", strtotime($row['schedule'])) ?></p>
+                        <p class="truncate"><?php echo strip_tags($desc) ?></p>
+                        <button class="btn btn-primary float-right read_more" data-id="<?php echo $row['id'] ?>">Read More</button>
+                    </div>
+                </div>
+            </div>
+            <?php endwhile; ?>
         </div>
-        <div class="card-body">
-            <h3><b class="filter-txt"><?php echo ucwords($row['title']) ?></b></h3>
-            <div><small>
-                <p><b><i class="fa fa-calendar"></i>
-                                    <?php echo date("F d, Y h:i A", strtotime($row['schedule'])) ?></b></p>
-                </small></div>
-                    <hr>
-                    <larger class="truncate filter-txt"><?php echo strip_tags($desc) ?></larger>
-                    <br>
-                    <button class="btn btn-primary float-right read_more" data-id="<?php echo $row['id'] ?>">Read
-                        More</button>
+    </div>
 
+    <!-- Articles Section -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <?php
+            $article = $conn->query("SELECT * from article order by id desc");
+            while ($row = $article->fetch_assoc()):
+                $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+                unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+                $desc = strtr(html_entity_decode($row['content']), $trans);
+                $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+            ?>
+            <div class="feed-card">
+                <div class="card" data-id="<?php echo $row['id'] ?>">
+                    <div class="card-body">
+                        <h3 class="filter-txt"><?php echo ucwords($row['title']) ?></h3>
+                        <p class="truncate"><?php echo strip_tags($desc) ?></p>
+                        <button class="btn btn-primary float-right read_more_article" data-id="<?php echo $row['id'] ?>">Read More</button>
+                    </div>
+                </div>
+            </div>
+            <?php endwhile; ?>
         </div>
     </div>
+
+    <!-- Careers Section -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <?php
+            $article = $conn->query("SELECT * from career order by id desc");
+            while ($row = $article->fetch_assoc()):
+                $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+                unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+                $desc = strtr(html_entity_decode($row['description']), $trans);
+                $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+            ?>
+            <div class="feed-card">
+                <div class="card" data-id="<?php echo $row['id'] ?>">
+                    <div class="card-body">
+                        <h3 class="filter-txt"><?php echo ucwords($row['job_title']) ?></h3>
+                        <h5 class="text-muted"><?php echo ucwords($row['company']) ?></h5>
+                        <p class="truncate"><?php echo strip_tags($desc) ?></p>
+                        <button class="btn btn-primary float-right read_more_article" data-id="<?php echo $row['id'] ?>">Read More</button>
+                    </div>
+                </div>
+            </div>
+            <?php endwhile; ?>
+        </div>
     </div>
-    </div>
-    <br>
-<?php endwhile; ?>
-
-
-
+</div>
 
 <script>
-    $('.read_more').click(function () {
-        location.href = "index.php?page=view_event&id=" + $(this).attr('data-id')
-    })
-    $('.banner img').click(function () {
-        viewer_modal($(this).attr('src'))
-    })
-    $('#filter').keyup(function (e) {
-        var filter = $(this).val()
+    // Events - Read More
+    $('.read_more').click(function() {
+        location.href = "index.php?page=view_event&id=" + $(this).attr('data-id');
+    });
 
-        $('.card.event-list .filter-txt').each(function () {
-            var txto = $(this).html();
-            txt = txto
-            if ((txt.toLowerCase()).includes((filter.toLowerCase())) == true) {
-                $(this).closest('.card').toggle(true)
+    // Articles - Read More
+    $('.read_more_article').click(function() {
+        location.href = "index.php?page=view_article&id=" + $(this).attr('data-id');
+    });
+
+    $('#filter').keyup(function(e) {
+        var filter = $(this).val().toLowerCase();
+
+        $('.card .filter-txt').each(function() {
+            var txt = $(this).html().toLowerCase();
+            if (txt.includes(filter)) {
+                $(this).closest('.card').fadeIn(); // Smooth transition for showing cards
             } else {
-                $(this).closest('.card').toggle(false)
-
+                $(this).closest('.card').fadeOut(); // Smooth transition for hiding cards
             }
-        })
-    })
+        });
+    });
 </script>
