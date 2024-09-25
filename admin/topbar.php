@@ -2,6 +2,13 @@
 include 'header.php';
 ?>
 <style>
+  @font-face {
+      font-family: 'Old English MT'; 
+      src: url('../fonts/oldenglishtextmt.ttf') format('truetype'); 
+      font-weight: normal;
+      font-style: normal;
+    }
+  
   .navbar {
     width: 100%;
     height: auto;
@@ -14,6 +21,7 @@ include 'header.php';
     display: flex;
     align-items: center;
     padding: 10px 20px;
+    font-weight: 600;
   }
 
   .container-fluid {
@@ -87,6 +95,7 @@ include 'header.php';
 
     .nav-item {
       margin: 5px 0;
+      font-weight: bold;
     }
   }
 </style>
@@ -96,8 +105,8 @@ include 'header.php';
     <div class="row align-items-center w-50">
       <!-- Logo Section -->
       <div class="col-md-2 text-center">
-        <a href="main_menu.php">
-          <img src="assets/img/Logo.png" alt="Logo" class="img-fluid">
+        <a href="index.php?page=home">
+          <img src="assets/img/logo.png" alt="Logo" class="img-fluid">
         </a>
       </div>
 
@@ -123,19 +132,19 @@ include 'header.php';
           <a class="nav-link px-2" href="index.php?page=home">Home</a>
         </li>
         <li class="nav-item mx-1">
-          <a class="nav-link px-2" href="index.php?page=about">About</a>
+          <a class="nav-link px-2" href="index.php?page=articles">Article</a>
         </li>
         <li class="nav-item mx-1">
-          <a class="nav-link px-2" href="index.php?page=contact">Contact Us</a>
+          <a class="nav-link px-2" href="index.php?page=courses">Course List</a>
         </li>
         <li class="nav-item mx-1">
-          <a class="nav-link px-2" href="index.php?page=article">Article</a>
+          <a class="nav-link px-2" href="index.php?page=alumni">Alumni List</a>
         </li>
         <li class="nav-item mx-1">
-          <a class="nav-link px-2" href="index.php?page=careers">Job</a>
+          <a class="nav-link px-2" href="index.php?page=jobs">Job</a>
         </li>
         <li class="nav-item mx-1">
-          <a class="nav-link px-2" href="index.php?page=forum">Forums</a>
+          <a class="nav-link px-2" href="index.php?page=forums">Forums</a>
         </li>
       </ul>
     </div>

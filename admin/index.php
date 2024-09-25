@@ -12,13 +12,15 @@
 <?php
   if(!isset($_SESSION['login_id']))
     header('location:login.php');
- include('./header.php'); 
+ include('header.php'); 
+ include ('topbar.php'); 
  // include('./auth.php'); 
  ?>
 
 </head>
 <style>
 	body{
+      font-family: 'Poppins', sans-serif;
         background: #80808045;
   }
   .modal-dialog.large {
@@ -61,7 +63,7 @@
 </style>
 
 <body>
-	<?php include 'topbar.php' ?>
+	
   <div class="toast" id="alert_toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-body text-white">
     </div>

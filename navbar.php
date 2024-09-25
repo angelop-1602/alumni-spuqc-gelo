@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php
+include 'header.php';
+?>
   <style>
     @font-face {
       font-family: 'Old English MT'; 
@@ -13,6 +10,7 @@
     }
 
     body {
+      
       margin: 0;
       padding-top: 100px; /* Adjust based on the navbar height */
     }
@@ -26,9 +24,9 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
-      position: fixed; /* Fix navbar at the top */
+      position: absolute; /* Fix navbar at the top */
       top: 0;
-      z-index: 9999;
+      z-index: 1000;
     }
 
     .nav-main {
@@ -70,6 +68,8 @@
     }
 
     .navbar .nav-link {
+      font-family: 'Poppins';
+      font-size: 600;
       text-decoration: none;
       font-size: 27px;
       color: #343a40;
@@ -102,7 +102,6 @@
       }
     }
   </style>
-</head>
 
 <body>
   <div class="nav-main">

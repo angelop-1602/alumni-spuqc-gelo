@@ -43,35 +43,10 @@ foreach ($current_employment_status as &$status) {
 function safe_json_encode($value){
     return json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
 }
+include ("header.php");
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumni Analytics Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .summary_icon {
-            font-size: 3rem;
-            position: absolute;
-            right: 1rem;
-            color: #ffffff96;
-        }
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-    </style>
-</head>
+
 <body>
-<div class="container-fluid">
     <div class="row mt-3">
         <div class="col-lg-12">
             <div class="card">
@@ -182,7 +157,6 @@ function safe_json_encode($value){
             </div>              
         </div>
     </div>
-</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

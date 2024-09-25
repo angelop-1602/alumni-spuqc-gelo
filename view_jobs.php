@@ -1,55 +1,110 @@
-<?php include 'admin/db_connect.php' ?>
+<?php include 'admin/db_connect.php'; ?>
 <?php
-if(isset($_GET['id'])){
-	$qry = $conn->query("SELECT * FROM career where id=".$_GET['id'])->fetch_array();
-	foreach($qry as $k =>$v){
-		$$k = $v;
-	}
+if (isset($_GET['id'])) {
+    $qry = $conn->query("SELECT * FROM career WHERE id=" . $_GET['id'])->fetch_array();
+    foreach ($qry as $k => $v) {
+        $$k = $v;
+    }
 }
-
 ?>
+
 <div class="container-fluid">
-	<p>Company: <b><large><?php echo ucwords($company) ?></large></b></p>
-	<p>Job Title: <b><large><?php echo ucwords($job_title) ?></large></b></p>
-	<p>Location: <i class="fa fa-map-marker"></i> <b><large><?php echo $company ?></large></b></p>
-	<hr class="divider">
-	<?php echo html_entity_decode($description) ?>
+    <div class="card">
+        <div class="card-header text-center">
+            <h4><?php echo ucwords($job_title); ?></h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Company:</strong> <b><?php echo ucwords($company); ?></b></p>
+            <p><strong>Location:</strong> <i class="fa fa-map-marker"></i> <b><?php echo ucwords($location); ?></b></p>
+            <hr class="divider">
+            <div class="job-description">
+                <?php echo html_entity_decode($description); ?>
+            </div>
+        </div>
+        <div class="modal-footer display">
+            <button class="btn btn-secondary float-right" type="button" data-dismiss="modal">Close</button>
+        </div>
+    </div>
 </div>
-<div class="modal-footer display">
-	<div class="row">
-		<div class="col-md-12">
-			<button class="btn float-right btn-secondary" type="button" data-dismiss="modal">Close</button>
-		</div>
-	</div>
-</div>
+
 <style>
-	p{
-		margin:unset;
-	}
-	#uni_modal .modal-footer{
-		display: none;
-	}
-	#uni_modal .modal-footer.display {
-		display: block;
-	}
+    body {
+        font-family: "Poppins", sans-serif;
+    }
+
+    .container-fluid {
+        padding: 20px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: white;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .job-description {
+        line-height: 1.6;
+        color: #333;
+    }
+
+    .divider {
+        border: 1px solid #e0e0e0;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    #uni_modal .modal-footer {
+        display: none;
+    }
+
+    #uni_modal .modal-footer.display {
+        display: block;
+    }
 </style>
+
 <script>
-	$('.text-jqte').jqte();
-	$('#manage-career').submit(function(e){
-		e.preventDefault()
-		start_load()
-		$.ajax({
-			url:'admin/ajax.php?action=save_career',
-			method:'POST',
-			data:$(this).serialize(),
-			success:function(resp){
-				if(resp == 1){
-					alert_toast("Data successfully saved.",'success')
-					setTimeout(function(){
-						location.reload()
-					},1000)
-				}
-			}
-		})
-	})
+    // Initialize jqte editor
+    $('.text-jqte').jqte();
+
+    // Handle form submission
+    $('#manage-career').submit(function(e) {
+        e.preventDefault();
+        start_load();
+        $.ajax({
+            url: 'admin/ajax.php?action=save_career',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(resp) {
+                if (resp == 1) {
+                    alert_toast("Data successfully saved.", 'success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    alert_toast("Failed to save data.", 'error');
+                }
+            },
+            error: function() {
+                alert_toast("An error occurred during the request.", 'error');
+            }
+        });
+    });
 </script>

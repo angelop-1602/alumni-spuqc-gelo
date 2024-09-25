@@ -1,50 +1,66 @@
-<?php
-include 'admin/db_connect.php';
-?>
+<?php include 'admin/db_connect.php'; ?>
 <style>
     body {
-        background-color: #f8f9fa;
+        background-color: #f4f4f4;
+        font-family: "Poppins", sans-serif;
+    }
+    .container {
+        max-width: 800px; /* Center the content */
+        margin: auto;
+        padding: 20px;
+    }
+    .feed-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #343a40;
+        margin-bottom: 20px;
+    }
+    .filter-buttons {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .filter-buttons button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .filter-buttons button:hover {
+        background-color: #0056b3;
     }
     .feed-card {
-        margin-bottom: 2rem;
-        border: none;
-    }
-    .card {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
+        background-color: #fff;
         border-radius: 10px;
-        overflow: hidden;
-        background-color: white;
-    }
-    .card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-    .card img {
-        height: auto;
-        width: 100%;
-        object-fit: cover;
-    }
-    .card-body {
         padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s;
+        display: flex;
+        flex-direction: column; /* Allow for column layout */
     }
-    .card-body h3 {
-        font-size: 1.25rem;
+    .feed-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    .feed-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
         color: #333;
-        font-weight: 600;
+    }
+    .feed-card h5 {
+        font-size: 1.1rem;
+        color: #666;
         margin-bottom: 10px;
     }
-    .card-body p {
+    .date-text {
         font-size: 0.9rem;
-        color: #666;
-    }
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-        transition: background-color 0.3s ease;
-        margin-top: 10px;
-    }
-    .btn-primary:hover {
-        background-color: #0056b3;
+        color: #aaa;
+        margin-bottom: 10px;
     }
     .truncate {
         display: -webkit-box;
@@ -52,23 +68,39 @@ include 'admin/db_connect.php';
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: #555;
+        margin-bottom: 15px; /* Add margin below the text */
     }
-    .feed-title {
-        padding: 1rem 0;
-        font-size: 1.75rem;
-        font-weight: bold;
-        text-align: center;
-        color: #343a40;
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        align-self: flex-end; /* Align button to the bottom right */
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
     }
 </style>
 
-<div class="container mt-5">
-    <!-- Feed Title -->
+<div class="container">
     <div class="feed-title">Latest Updates</div>
 
-    <!-- Events Section -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
+    <!-- Filter Buttons -->
+    <div class="filter-buttons">
+        <button class="filter-btn" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="events">Events</button>
+        <button class="filter-btn" data-filter="articles">Articles</button>
+        <button class="filter-btn" data-filter="careers">Jobs</button>
+    </div>
+
+    <!-- Feed Content -->
+    <div class="feed-content">
+        <!-- Events Section -->
+        <div class="events">
             <?php
             $event = $conn->query("SELECT * FROM events WHERE date_format(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "' ORDER BY unix_timestamp(schedule) ASC");
             while ($row = $event->fetch_assoc()):
@@ -77,67 +109,54 @@ include 'admin/db_connect.php';
                 $desc = strtr(html_entity_decode($row['content']), $trans);
                 $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
             ?>
-            <div class="feed-card">
-                <div class="card" data-id="<?php echo $row['id'] ?>">
-                    <?php if (!empty($row['banner'])): ?>
-                    <img src="admin/assets/uploads/<?php echo $row['banner'] ?>" alt="Event Banner" class="img-fluid">
-                    <?php endif; ?>
-                    <div class="card-body">
-                        <h3 class="filter-txt"><?php echo ucwords($row['title']) ?></h3>
-                        <p><i class="fa fa-calendar"></i> <?php echo date("F d, Y h:i A", strtotime($row['schedule'])) ?></p>
-                        <p class="truncate"><?php echo strip_tags($desc) ?></p>
-                        <button class="btn btn-primary float-right read_more" data-id="<?php echo $row['id'] ?>">Read More</button>
-                    </div>
-                </div>
+            <div class="feed-card event-card">
+                <?php if (!empty($row['banner'])): ?>
+                <img src="admin/assets/uploads/<?php echo $row['banner'] ?>" alt="Event Banner" class="img-fluid" style="border-radius: 10px; margin-bottom: 15px;">
+                <?php endif; ?>
+                <h3><?php echo ucwords($row['title']); ?></h3>
+                <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
+                <div class="timestamp"><i class="fa fa-calendar"></i> <?php echo date("F d, Y h:i A", strtotime($row['schedule'])); ?></div>
+                <p class="truncate"><?php echo strip_tags($desc); ?></p>
+                <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
             </div>
             <?php endwhile; ?>
         </div>
-    </div>
 
-    <!-- Articles Section -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
+        <!-- Articles Section -->
+        <div class="articles">
             <?php
-            $article = $conn->query("SELECT * from article order by id desc");
+            $article = $conn->query("SELECT * FROM article ORDER BY id DESC");
             while ($row = $article->fetch_assoc()):
                 $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                 unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
                 $desc = strtr(html_entity_decode($row['content']), $trans);
                 $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
             ?>
-            <div class="feed-card">
-                <div class="card" data-id="<?php echo $row['id'] ?>">
-                    <div class="card-body">
-                        <h3 class="filter-txt"><?php echo ucwords($row['title']) ?></h3>
-                        <p class="truncate"><?php echo strip_tags($desc) ?></p>
-                        <button class="btn btn-primary float-right read_more_article" data-id="<?php echo $row['id'] ?>">Read More</button>
-                    </div>
-                </div>
+            <div class="feed-card article-card">
+                <h3><?php echo ucwords($row['title']); ?></h3>
+                <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
+                <p class="truncate"><?php echo strip_tags($desc); ?></p>
+                <button class="btn-primary read_more_article" data-id="<?php echo $row['id']; ?>">Read More</button>
             </div>
             <?php endwhile; ?>
         </div>
-    </div>
 
-    <!-- Careers Section -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
+        <!-- Careers Section -->
+        <div class="careers">
             <?php
-            $article = $conn->query("SELECT * from career order by id desc");
-            while ($row = $article->fetch_assoc()):
+            $career = $conn->query("SELECT * FROM career ORDER BY id DESC");
+            while ($row = $career->fetch_assoc()):
                 $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
                 unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
                 $desc = strtr(html_entity_decode($row['description']), $trans);
                 $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
             ?>
-            <div class="feed-card">
-                <div class="card" data-id="<?php echo $row['id'] ?>">
-                    <div class="card-body">
-                        <h3 class="filter-txt"><?php echo ucwords($row['job_title']) ?></h3>
-                        <h5 class="text-muted"><?php echo ucwords($row['company']) ?></h5>
-                        <p class="truncate"><?php echo strip_tags($desc) ?></p>
-                        <button class="btn btn-primary float-right read_more_article" data-id="<?php echo $row['id'] ?>">Read More</button>
-                    </div>
-                </div>
+            <div class="feed-card career-card">
+                <h3><?php echo ucwords($row['job_title']); ?></h3>
+                <h5><?php echo ucwords($row['company']); ?></h5>
+                <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
+                <p class="truncate"><?php echo strip_tags($desc); ?></p>
+                <button class="btn-primary read_more_jobs" data-id="<?php echo $row['id']; ?>">Read More</button>
             </div>
             <?php endwhile; ?>
         </div>
@@ -145,26 +164,39 @@ include 'admin/db_connect.php';
 </div>
 
 <script>
-    // Events - Read More
-    $('.read_more').click(function() {
-        location.href = "index.php?page=view_event&id=" + $(this).attr('data-id');
+    // Filter Functionality
+    document.querySelectorAll('.filter-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var filter = this.getAttribute('data-filter');
+            console.log("Filtering: " + filter); // Debugging line
+
+            document.querySelectorAll('.feed-card').forEach(function(card) {
+                if (filter === 'all') {
+                    card.style.display = 'block'; // Show all
+                } else {
+                    // Hide all cards not matching the filter
+                    card.style.display = card.classList.contains(filter + '-card') ? 'block' : 'none';
+                }
+            });
+        });
     });
 
-    // Articles - Read More
-    $('.read_more_article').click(function() {
-        location.href = "index.php?page=view_article&id=" + $(this).attr('data-id');
+    // Read More Functionality
+    document.querySelectorAll('.read_more').forEach(function(button) {
+        button.addEventListener('click', function() {
+            location.href = "index.php?page=view_event&id=" + this.getAttribute('data-id');
+        });
+    });
+    
+    document.querySelectorAll('.read_more_article').forEach(function(button) {
+        button.addEventListener('click', function() {
+            location.href = "index.php?page=view_article&id=" + this.getAttribute('data-id');
+        });
     });
 
-    $('#filter').keyup(function(e) {
-        var filter = $(this).val().toLowerCase();
-
-        $('.card .filter-txt').each(function() {
-            var txt = $(this).html().toLowerCase();
-            if (txt.includes(filter)) {
-                $(this).closest('.card').fadeIn(); // Smooth transition for showing cards
-            } else {
-                $(this).closest('.card').fadeOut(); // Smooth transition for hiding cards
-            }
+    document.querySelectorAll('.read_more_jobs').forEach(function(button) {
+        button.addEventListener('click', function() {
+            location.href = "index.php?page=view_jobs&id=" + this.getAttribute('data-id');
         });
     });
 </script>

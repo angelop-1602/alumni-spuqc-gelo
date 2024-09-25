@@ -7,6 +7,10 @@ foreach ($topic->fetch_array() as $k => $v) {
 }
 ?>
 <style>
+    body{
+        margin: 0;
+        padding: 0;
+    }
     #portfolio .img-fluid {
         width: calc(100%);
         height: 30vh;
@@ -191,5 +195,4 @@ foreach ($topic->fetch_array() as $k => $v) {
             }
         })
     }
-
 </script>

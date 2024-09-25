@@ -8,7 +8,7 @@ include 'admin/db_connect.php';
     }
     .container{
         position: relative;
-        top: 12rem;
+        top: 2rem;
     }
 </style>
 <div class="container">
