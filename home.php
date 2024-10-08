@@ -8,7 +8,7 @@
     }
 
     .container {
-        max-width: 800px; /* Center the content */
+        max-width: 100; /* Center the content */
         margin: auto;
         padding: 20px;
     }
@@ -56,7 +56,7 @@
     
     .feed-card img {
         width: 100%;
-        height: 200px;
+        height: 300px;
         object-fit: cover;
         border-radius: 10px;
         margin-bottom: 15px;
@@ -187,6 +187,30 @@
     .comment-section button:hover {
         background-color: #1e6f22;
     }
+    
+    .comment {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center align items vertically */
+    background-color: #f9f9f9; /* Light background for the comment */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the comment */
+    margin-bottom: 10px; /* Space between comments */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.comment-content {
+    flex: 1; /* Allow the comment content to take available space */
+    color: #333; /* Darker text color for better readability */
+}
+
+.date-text {
+    color: #888; /* Light color for the date */
+    font-size: 0.9em; /* Slightly smaller font for the date */
+    white-space: nowrap; /* Prevent the date from wrapping */
+    margin-left: 20px; /* Add space between comment and date */
+}
+
 
     /* Responsive adjustments */
     @media (max-width: 600px) {
@@ -236,9 +260,9 @@
     <!-- Filter Buttons -->
     <div class="filter-buttons">
         <button class="filter-btn" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="events">Events</button>
-        <button class="filter-btn" data-filter="articles">Articles</button>
-        <button class="filter-btn" data-filter="careers">Jobs</button>
+        <button class="filter-btn" data-filter="event">Events</button>
+        <button class="filter-btn" data-filter="article">Articles</button>
+        <button class="filter-btn" data-filter="job">Jobs</button>
     </div>
     <div class="forum-topic-form">
         <h2>Create a New Topic</h2>
@@ -249,108 +273,135 @@
 
     <!-- Feed Content -->
     <div class="feed-content">
-        <!-- Events Section -->
-        <div class="events">
-            <?php
-            $event = $conn->query("SELECT * FROM events WHERE date_format(schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "' ORDER BY unix_timestamp(schedule) ASC");
-            while ($row = $event->fetch_assoc()):
-                $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-                unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-                $desc = strtr(html_entity_decode($row['content']), $trans);
-                $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
-            ?>
-            <div class="feed-card event-card">
-                <div class="user-info">
-                    <img src="assets/img/logo-qc.png" alt="User Avatar"> <!-- Placeholder for user avatar -->
-                    <div>
-                        <strong>Admin</strong> <!-- Assume there's a user_name field -->
-                        <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
-                    </div>
-                </div>
-                <?php if (!empty($row['banner'])): ?>
-                <img src="admin/assets/uploads/<?php echo $row['banner'] ?>" alt="Event Banner" class="img-fluid">
-                <?php endif; ?>
-                <h3><?php echo ucwords($row['title']); ?></h3>
-                <div class="timestamp"><i class="fa fa-calendar"></i> <?php echo date("F d, Y h:i A", strtotime($row['schedule'])); ?></div>
-                <p class="truncate"><?php echo strip_tags($desc); ?></p>
-                <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
-
-                <div class="comment-section">
-                    <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>">
-                    <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
-                </div>
-            </div>
-            <?php endwhile; ?>
-        </div>
-
-        <!-- Articles Section -->
-        <div class="articles">
-            <?php
-            $article = $conn->query("SELECT * FROM article ORDER BY id DESC");
-            while ($row = $article->fetch_assoc()):
-                $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-                unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-                $desc = strtr(html_entity_decode($row['content']), $trans);
-                $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
-            ?>
-            <div class="feed-card article-card">
-                <div class="user-info">
-                    <img src="assets/img/logo-qc.png" alt="User Avatar">
-                    <div>
-                        <strong>Admin</strong>
-                        <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
-                    </div>
-                </div>
-                <h3><?php echo ucwords($row['title']); ?></h3>
-                <p class="truncate"><?php echo strip_tags($desc); ?></p>
-                <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
-
-                <div class="comment-section">
-                    <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>">
-                    <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
-                </div>
-            </div>
-            <?php endwhile; ?>
-        </div>
-
-        <!-- Jobs Section -->
-        <div class="jobs">
-    <?php
-    $jobs = $conn->query("SELECT c.*, u.name, u.img FROM career c JOIN users u ON c.user_id = u.id ORDER BY c.id DESC"); // Added avatar field
-    while ($row = $jobs->fetch_assoc()):
-        $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-        unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-        $desc = strtr(html_entity_decode($row['description']), $trans);
-        $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
-
-        // Convert the binary data to a Base64 encoded string
-        $avatar = !empty($row['img']) ? 'data:image/jpeg;base64,' . base64_encode($row['img']) : 'assets/img/default_avatar.jpg'; // Fallback to a default image
-    ?>
-    <div class="feed-card job-card">
-        <div class="user-info">
-            <img src="<?php echo $avatar; ?>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;"> <!-- Display avatar -->
-            <div>
-                <strong><?php echo ucwords($row['name']); ?></strong>
-                <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
-            </div>
-        </div>
-        <h3><?php echo ucwords($row['job_title']); ?></h3>
-        <h5><?php echo ucwords($row['company']); ?></h5>
-        <div class="date-text">Location: <?php echo ucwords($row['location']); ?></div>
-        <p class="truncate"><?php echo strip_tags($desc); ?></p>
-        <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
-
-        <div class="comment-section">
-            <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>">
-            <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
-        </div>
-    </div>
-    <?php endwhile; ?>
-</div>
-<!-- Forum Topics Section -->
-<div class="forum-topics">
+    <!-- Events Section -->
+    <div class="events">
         <?php
-        $forumTopics = $conn->query("SELECT ft.*, u.name, u.img FROM forum_topics ft JOIN users u ON ft.user_id = u.id ORDER BY ft.date_created DESC"); // Assuming you have an avatar field in users
+        $user_id = $_SESSION['login_id']; // Get the logged-in user ID
+        
+        $event = $conn->query("SELECT e.*, ec.id as commit_id 
+                               FROM events e
+                               LEFT JOIN event_commits ec 
+                               ON e.id = ec.event_id 
+                               AND ec.user_id = '$user_id'
+                               WHERE date_format(e.schedule, '%Y-%m-%d') >= '" . date('Y-m-d') . "' 
+                               ORDER BY unix_timestamp(e.schedule) ASC");
+        
+        while ($row = $event->fetch_assoc()):
+            $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+            unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+            $desc = strtr(html_entity_decode($row['content']), $trans);
+            $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+
+            // Check if the user has participated in this event
+            $has_participated = !empty($row['commit_id']);  // True if commit_id exists
+        ?>
+        <div class="feed-card event-card">
+            <div class="user-info">
+                <img src="assets/img/logo-qc.png" alt="User Avatar"> <!-- Placeholder for user avatar -->
+                <div>
+                    <strong>Posted by:</strong> Admin <!-- Assume there's a user_name field -->
+                    <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
+                </div>
+            </div>
+            <?php if (!empty($row['banner'])): ?>
+            <img src="admin/assets/uploads/<?php echo $row['banner'] ?>" alt="Event Banner" class="img-fluid">
+            <?php endif; ?>
+            <h3><?php echo ucwords($row['title']); ?></h3>
+            <div class="timestamp"><i class="fa fa-calendar"></i> <strong>Scheduled on:</strong> <?php echo date("F d, Y h:i A", strtotime($row['schedule'])); ?></div>
+            <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
+
+            <!-- Check if the user has already participated -->
+            <?php if ($has_participated): ?>
+                <button class="btn-secondary" disabled>Participated</button> <!-- Disabled button -->
+            <?php else: ?>
+                <button class="btn-success participate" data-id="<?php echo $row['id']; ?>">Participate</button> <!-- Active button -->
+            <?php endif; ?>
+
+            <!-- Read More Button -->
+            <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
+            <div class="identifier">Event</div> <!-- Identifier -->
+        </div>
+        <?php endwhile; ?>
+    </div>
+
+    <!-- Articles Section -->
+    <div class="articles">
+        <?php
+        $article = $conn->query("SELECT * FROM article ORDER BY id DESC");
+        while ($row = $article->fetch_assoc()):
+            $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+            unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+            $desc = strtr(html_entity_decode($row['content']), $trans);
+            $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+
+            // Fetch image blob and encode it as base64
+            $image_data = base64_encode($row['img']); 
+            $img_src = 'data:image/jpeg;base64,' . $image_data;
+        ?>
+        <div class="feed-card article-card">
+            <div class="user-info">
+                <img src="assets/img/logo-qc.png" alt="User Avatar">
+                <div>
+                    <strong>Posted by:</strong> Admin
+                    <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
+                </div>
+            </div>
+            <h3><?php echo ucwords($row['title']); ?></h3>
+
+            <!-- Display article image -->
+            <?php if (!empty($row['img'])): ?>
+            <div class="article-image">
+                <img src="<?php echo $img_src; ?>" alt="<?php echo $row['title']; ?>" class="article-thumbnail">
+            </div>
+            <?php endif; ?>
+
+            <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
+            <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
+            <div class="identifier">Article</div> <!-- Identifier -->
+        </div>
+        <?php endwhile; ?>
+    </div>
+
+    <!-- Jobs Section -->
+    <div class="jobs">
+        <?php
+        $jobs = $conn->query("SELECT c.*, u.name, u.img FROM career c JOIN users u ON c.user_id = u.id ORDER BY c.id DESC"); // Added avatar field
+        while ($row = $jobs->fetch_assoc()):
+            $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+            unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+            $desc = strtr(html_entity_decode($row['description']), $trans);
+            $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+
+            // Convert the binary data to a Base64 encoded string
+            $avatar = !empty($row['img']) ? 'data:image/jpeg;base64,' . base64_encode($row['img']) : 'assets/img/default_avatar.jpg'; // Fallback to a default image
+        ?>
+        <div class="feed-card job-card">
+            <div class="user-info">
+                <img src="<?php echo $avatar; ?>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;"> <!-- Display avatar -->
+                <div>
+                    <strong>Posted by:</strong> <?php echo ucwords($row['name']); ?>
+                    <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
+                </div>
+            </div>
+            <h3><?php echo ucwords($row['job_title']); ?></h3>
+            <h5><strong>Company:</strong> <?php echo ucwords($row['company']); ?></h5>
+            <div class="date-text"><strong>Location:</strong> <?php echo ucwords($row['location']); ?></div>
+            <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
+            <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
+
+            <div class="comment-section">
+                <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>">
+                <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
+            </div>
+            <div class="identifier">Job Post</div> <!-- Identifier -->
+        </div>
+        <?php endwhile; ?>
+    </div>
+
+    <!-- Forum Topics Section -->
+    <div class="forum-topics">
+        <?php
+        $forumTopics = $conn->query("SELECT ft.*, u.name, u.img FROM forum_topics ft JOIN users u ON ft.user_id = u.id ORDER BY ft.date_created DESC");
         while ($row = $forumTopics->fetch_assoc()):
             $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
             unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
@@ -360,25 +411,44 @@
         <div class="feed-card forum-topic-card">
             <div class="user-info">
                 <?php if (!empty($row['img'])): ?>
-                    <img src="data:image/jpeg;base64,<?php echo base64_encode($row['img']); ?>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;"> <!-- Load user avatar from DB -->
+                    <img src="data:image/jpeg;base64,<?php echo base64_encode($row['img']); ?>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
                 <?php else: ?>
-                    <img src="assets/img/default_avatar.jpg" alt="Default Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;"> <!-- Placeholder for user avatar -->
+                    <img src="assets/img/default_avatar.jpg" alt="Default Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
                 <?php endif; ?>
                 <div>
-                    <strong><?php echo ucwords($row['name']); ?></strong>
+                    <strong>Posted by:</strong> <?php echo ucwords($row['name']); ?>
                     <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
                 </div>
             </div>
             <h3><?php echo ucwords($row['title']); ?></h3>
-            <p class="truncate"><?php echo strip_tags($desc); ?></p>
-            <button class="btn-primary read_more_forum" data-id="<?php echo $row['id']; ?>">Read More</button>
+            <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
+            <strong>Comments</strong>
+            <div class="comment-section">
+                <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>"/>
+                <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
+            </div>
+            
+            <!-- Display Comments -->
+            <div class="comments-container" id="comments-container-<?php echo $row['id']; ?>">
+                <?php
+                // Fetch comments for the current topic
+                $comments = $conn->query("SELECT fc.*, u.name FROM forum_comments fc JOIN users u ON fc.user_id = u.id WHERE fc.topic_id = ".$row['id']." ORDER BY fc.date_created DESC");
+                while ($comment = $comments->fetch_assoc()):
+                ?>
+                    <div class="comment">
+                        <div class="comment-content">
+                            <strong><?php echo ucwords($comment['name']); ?></strong>: <?php echo htmlspecialchars($comment['comment']); ?>
+                        </div>
+                        <div class="date-text"><?php echo date("F d, Y", strtotime($comment['date_created'])); ?></div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+            <div class="identifier">Forum Topic</div> <!-- Identifier -->
         </div>
         <?php endwhile; ?>
     </div>
 </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
     // Handle modal display
@@ -407,29 +477,124 @@
             modal.style.display = "none";
         }
     };
+    
+    document.querySelectorAll('.filter-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var filter = this.getAttribute('data-filter');
+            console.log("Filtering: " + filter); // Debugging line
 
-    function addComment(id) {
-        const commentInput = document.getElementById(`comment-input-${id}`);
-        const comment = commentInput.value;
+            document.querySelectorAll('.feed-card').forEach(function(card) {
+                if (filter === 'all') {
+                    card.style.display = 'block'; // Show all
+                } else {
+                    // Hide all cards not matching the filter
+                    card.style.display = card.classList.contains(filter + '-card') ? 'block' : 'none';
+                }
+            });
+        });
+    });
+    
+    
+    $('#filter').keyup(function(e) {
+        var filter = $(this).val().toLowerCase();
 
-        if (comment) {
-            // Send the comment to the server
-            fetch('add_comment.php', {
+        $('.card .filter-txt').each(function() {
+            var txt = $(this).html().toLowerCase();
+            if (txt.includes(filter)) {
+                $(this).closest('.card').fadeIn(); // Smooth transition for showing cards
+            } else {
+                $(this).closest('.card').fadeOut(); // Smooth transition for hiding cards
+            }
+        });
+    });
+    
+    $(document).ready(function() {
+        $('.participate').on('click', function() {
+            var eventId = $(this).data('id');
+            var userId = <?php echo $_SESSION['login_id']; ?>;  // Assuming user is logged in and user_id is in session
+
+            // Send data to server via AJAX
+            $.ajax({
+                url: 'participate.php',
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+                data: {
+                    event_id: eventId,
+                    user_id: userId
                 },
-                body: JSON.stringify({ id, comment }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Optionally handle the response (e.g., show the new comment)
-                commentInput.value = ''; // Clear input field
-                alert(data.message); // Show a message
-            })
-            .catch((error) => console.error('Error:', error));
-        }
+                success: function(response) {
+                    if (response == 'success') {
+                        alert('You have successfully participated in the event!');
+                        // Update the button to show "Participated" and disable it
+                        $('.participate[data-id="' + eventId + '"]').text('Participated').prop('disabled', true).removeClass('btn-success').addClass('btn-secondary');
+                    } else {
+                        alert('Error: ' + response);
+                    }
+                },
+                error: function() {
+                    alert('There was an error processing your request.');
+                }
+            });
+        });
+        
+        $('.participate').on('click', function() {
+            var eventId = $(this).data('id');
+            var userId = <?php echo $_SESSION['login_id']; ?>;  // Assuming user is logged in and user_id is in session
+
+            // Send data to server via AJAX
+            $.ajax({
+                url: 'participate.php',
+                method: 'POST',
+                data: {
+                    event_id: eventId,
+                    user_id: userId
+                },
+                success: function(response) {
+                    if (response == 'success') {
+                        alert('You have successfully participated in the event!');
+                        // Update the button to show "Participated" and disable it
+                        $('.participate[data-id="' + eventId + '"]').text('Participated').prop('disabled', true).removeClass('btn-success').addClass('btn-secondary');
+                    } else {
+                        alert('Error: ' + response);
+                    }
+                },
+                error: function() {
+                    alert('There was an error processing your request.');
+                }
+            });
+        });
+    });
+
+    function addComment(topicId) {
+    const commentInput = document.getElementById(`comment-input-${topicId}`);
+    const comment = commentInput.value.trim(); // Get the comment text
+
+    if (comment) {
+        fetch('add_comment.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `topic_id=${topicId}&comment=${encodeURIComponent(comment)}`,
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data == 1) {
+                alert('Comment posted successfully!');
+                commentInput.value = ''; // Clear the input field
+                // Optionally, reload comments or update the UI to show the new comment
+            } else {
+                alert('Failed to post comment. Please try again.');
+                console.log(data);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    } else {
+        alert('Please enter a comment before posting.');
     }
+}
+
+
+
     document.getElementById('submit-topic').addEventListener('click', function() {
     const title = document.getElementById('topic-title').value;
     const description = document.getElementById('topic-description').value;

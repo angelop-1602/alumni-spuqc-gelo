@@ -63,7 +63,7 @@ function fetchCareers($conn) {
     return $output;
 }
 
-// Serve filtered content
+// Serve filtered content based on the selected filter
 switch ($filter) {
     case 'events':
         echo fetchEvents($conn);
@@ -75,6 +75,7 @@ switch ($filter) {
         echo fetchCareers($conn);
         break;
     default:
+        // If no filter is selected, return all content
         echo fetchEvents($conn) . fetchArticles($conn) . fetchCareers($conn);
 }
 ?>

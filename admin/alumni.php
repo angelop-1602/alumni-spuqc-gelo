@@ -115,7 +115,7 @@
                                     <p><b><?php echo $row['mobileNumber']; ?></b></p>
                                 </td>
                                 <td>
-                                <p><b><?php echo $row['employed'] == 1 ? 'Employed' : 'Unemployed'; ?></b></p>
+                                <p><b><?php echo $row['currentlyEmployed'] == 1 ? 'Employed' : 'Unemployed'; ?></b></p>
                                 </td>
                                 <td class="text-center">
                                     <?php if ($row['status'] == 1): ?>

@@ -10,13 +10,6 @@ if(isset($_GET['id'])){
     }
 }
 
-function outputImage($imgPath) {
-    if (!empty($imgPath) && file_exists($imgPath)) {
-        return $imgPath;
-    } else {
-        return "admin/assets/upload/1602730260_avatar.jpg"; // Replace with your default image path
-    }
-}
 ?>
 <style type="text/css">
     .avatar {
@@ -48,8 +41,12 @@ function outputImage($imgPath) {
     <div class="col-lg-12">
         <div>
             <center>
-				<div class="avatar">
-                    <img src="<?php echo outputImage($img); ?>" class="" alt="Alumni Avatar">
+                <div class="avatar">
+                    <?php if(!empty($img)): ?>
+                        <img src="data:image/png;base64,<?php echo base64_encode($img); ?>" alt="Alumni Avatar">
+                    <?php else: ?>
+                        <img src="path/to/default-avatar.png" alt="Default Avatar">
+                    <?php endif; ?>
                 </div>
             </center>
         </div>
@@ -72,7 +69,6 @@ function outputImage($imgPath) {
                 <p>Employment Status: <b><?php echo $currentlyEmployed == 1 ? 'Employed' : 'Unemployed' ?></b></p>
                 <p>Occupation: <b><?php echo $occupation ? $occupation : 'N/A' ?></b></p>
                 <p>Company: <b><?php echo $company ? $company : 'N/A' ?></b></p>
-                <p>Connected to: <b><?php echo $connected_to ? $connected_to : 'N/A' ?></b></p>
                 <p>Account Status: <b><?php echo $status == 1 ? '<span class="badge badge-primary">Verified</span>' : '<span class="badge badge-secondary">Unverified</span>' ?></b></p>
             </div>
         </div>

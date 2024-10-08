@@ -104,6 +104,9 @@ if ($alumni->num_rows > 0) {
             <span class="badge badge-secondary">Unemployed</span>
         <?php endif; ?>
     </td>
+    <td>
+        <p><b><?php echo $row['status'] == 1 ? 'Verified' : 'Not Verified'; ?></b></p>
+    </td>
     <td class="text-center">
         <button class="btn btn-sm btn-primary view_alumni" type="button" data-id="<?php echo $row['id']; ?>">View</button>
         <button class="btn btn-sm btn-danger delete_alumni" type="button" data-id="<?php echo $row['id']; ?>">Delete</button>

@@ -143,7 +143,7 @@ include 'header.php';
                   aria-haspopup="true" aria-expanded="false"><?php echo $_SESSION['login_name']; ?>
                   <i class="fa fa-angle-down"></i></a>
                 <div class="dropdown-menu" aria-labelledby="account_settings" style="left: -2.5em;">
-                  <a class="dropdown-item" href="index.php?page=my_account" id="manage_my_account"><i
+                  <a class="dropdown-item" href="index.php?page=profile_page" id="manage_my_account"><i
                       class="fa fa-cog"></i> Manage Account</a>
                   <a class="dropdown-item" href="admin/ajax.php?action=logout2"><i class="fa fa-power-off"></i>
                     Logout</a>

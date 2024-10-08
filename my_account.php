@@ -60,8 +60,8 @@ include 'admin/db_connect.php';
                                                 <textarea name="connected_to" id="" cols="30" rows="3" class="form-control"><?php echo $_SESSION['bio']['connected_to'] ?></textarea>
                                             </div>
                                             <?php 
-$avatar = !empty($_SESSION['bio']['avatar']) ? $_SESSION['bio']['avatar'] : 'default_avatar.png'; // Use a default image if none is set
-?>
+                                                $avatar = !empty($_SESSION['bio']['avatar']) ? $_SESSION['bio']['avatar'] : 'default_avatar.png'; // Use a default image if none is set
+                                                ?>
                                             <div class="col-md-5">
                                                 <label for="" class="control-label">Image</label>
                                                 <input type="file" class="form-control" name="img" onchange="displayImg(this,$(this))">
@@ -69,7 +69,7 @@ $avatar = !empty($_SESSION['bio']['avatar']) ? $_SESSION['bio']['avatar'] : 'def
 
                                             </div>  
                                         </div>
-                                        <div class="row">
+                                        <div class="row form-group">
                                              <div class="col-md-4">
                                                 <label for="" class="control-label">Email</label>
                                                 <input type="email" class="form-control" name="email"  value="<?php echo $_SESSION['bio']['email'] ?>" required>

@@ -105,7 +105,6 @@ if($action == "delete_comment"){
 	$save = $crud->delete_comment();
 	if($save)
 		echo $save;
-
 }
 
 if($action == "save_event"){
@@ -113,11 +112,13 @@ if($action == "save_event"){
 	if($save)
 		echo $save;
 }
+
 if($action == "delete_event"){
 	$save = $crud->delete_event();
 	if($save)
 		echo $save;
 }	
+
 if($action == "participate"){
 	$save = $crud->participate();
 	if($save)

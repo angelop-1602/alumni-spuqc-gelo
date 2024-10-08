@@ -12,6 +12,11 @@
   transform: scale(1.5);
   padding: 10px;
 }
+
+.card-header {
+    background: #FFD63E;
+    border-radius: 20px;
+}
 </style>
 	<div class="col-lg-12">
 		<div class="row mb-4 mt-4">
@@ -29,7 +34,7 @@
 						<b>Article List</b>
 						<span class="">
 
-							<button class="btn btn-primary btn-block btn-sm col-sm-2 float-right" type="button" id="new_career">
+							<button class="btn btn-success btn-block btn-sm col-sm-2 float-right" type="button" id="new_career">
 					<i class="fa fa-plus"></i> New</button>
 				</span>
 					</div>

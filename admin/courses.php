@@ -1,5 +1,11 @@
 <?php include('db_connect.php');?>
 
+<style>
+.card-header {
+    background: #FFD63E;
+    border-radius: 20px;
+}
+</style>
 <div class="container-fluid">
 	
 	<div class="col-lg-12">
@@ -23,7 +29,7 @@
 					<div class="card-footer">
 						<div class="row">
 							<div class="col-md-12">
-								<button class="btn btn-sm btn-primary col-sm-3 offset-md-3"> Save</button>
+								<button class="btn btn-sm btn-success col-sm-3 offset-md-3"> Save</button>
 								<button class="btn btn-sm btn-default col-sm-3" type="button" onclick="$('#manage-course').get(0).reset()"> Cancel</button>
 							</div>
 						</div>
@@ -37,7 +43,7 @@
 			<div class="col-md-8">
 				<div class="card">
 					<div class="card-header">
-						<b>course List</b>
+						<b>Course List</b>
 					</div>
 					<div class="card-body">
 						<table class="table table-bordered table-hover">

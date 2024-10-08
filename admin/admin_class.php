@@ -187,45 +187,65 @@ Class Action {
 		return 0; // Failure
 	}
 	
-	function update_account(){
+	function update_account() {
 		extract($_POST);
-		$data = " name = '".$firstname.' '.$lastname."' ";
-		$data .= ", username = '$email' ";
-		if(!empty($password))
-		$data .= ", password = '".md5($password)."' ";
-		$chk = $this->db->query("SELECT * FROM users where username = '$email' and id != '{$_SESSION['login_id']}' ")->num_rows;
-		if($chk > 0){
-			return 2;
-			exit;
+	
+		// Prepare user data for update
+		$data = "name = '" . $this->db->real_escape_string($firstname . ' ' . $lastname) . "', ";
+		$data .= "username = '" . $this->db->real_escape_string($email) . "' ";
+	
+		// Check for password update
+		if (!empty($password)) {
+			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+			$data .= ", password = '$hashed_password' ";
 		}
-			$save = $this->db->query("UPDATE users set $data where id = '{$_SESSION['login_id']}' ");
-		if($save){
+	
+		// Check for existing username
+		$chk = $this->db->query("SELECT * FROM users WHERE username = '" . $this->db->real_escape_string($email) . "' AND id != '{$_SESSION['login_id']}'")->num_rows;
+	
+		if ($chk > 0) {
+			return 2; // Username already exists
+		}
+	
+		// Update the users table
+		$save = $this->db->query("UPDATE users SET $data WHERE id = '{$_SESSION['login_id']}'");
+	
+		if ($save) {
 			$data = '';
-			foreach($_POST as $k => $v){
-				if($k =='password')
-					continue;
-				if(empty($data) && !is_numeric($k) )
-					$data = " $k = '$v' ";
-				else
-					$data .= ", $k = '$v' ";
-			}
-			if($_FILES['img']['tmp_name'] != ''){
-							$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
-							$move = move_uploaded_file($_FILES['img']['tmp_name'],'assets/uploads/'. $fname);
-							$data .= ", avatar = '$fname' ";
-
-			}
-			$save_alumni = $this->db->query("UPDATE alumnus_bio set $data where id = '{$_SESSION['bio']['id']}' ");
-			if($data){
-				foreach ($_SESSION as $key => $value) {
-					unset($_SESSION[$key]);
+			foreach ($_POST as $k => $v) {
+				if ($k == 'password') continue; // Skip password
+				if (empty($data) && !is_numeric($k)) {
+					$data = " $k = '" . $this->db->real_escape_string($v) . "' ";
+				} else {
+					$data .= ", $k = '" . $this->db->real_escape_string($v) . "' ";
 				}
-				$login = $this->login2();
-				if($login)
-				return 1;
+			}
+	
+			// Handle image upload as binary data
+			if ($_FILES['img']['tmp_name'] != '') {
+				// Read the image file into a binary string
+				$imgData = file_get_contents($_FILES['img']['tmp_name']);
+				// Escape binary data for MySQL
+				$imgData = $this->db->real_escape_string($imgData);
+				// Add the image data to the query
+				$data .= ", img = '$imgData' ";
+			}
+	
+			// Update alumnus_bio
+			if ($data) {
+				$save_alumni = $this->db->query("UPDATE alumnus_bio SET $data WHERE id = '{$_SESSION['bio']['id']}'");
+				if ($save_alumni) {
+					// Clear session variables and re-login
+					session_destroy();
+					$login = $this->login2(); // Ensure this function resets session correctly
+					if ($login) {
+						return 1; // Update successful
+					}
+				}
 			}
 		}
 	}
+	
 
 	function save_settings(){
 		extract($_POST);
@@ -402,20 +422,46 @@ Class Action {
 			return 1;
 		}
 	}
-	function save_comment(){
-		extract($_POST);
-		$data = " comment = '".htmlentities(str_replace("'","&#x2019;",$comment))."' ";
-
-		if(empty($id)){
-			$data .= ", topic_id = '$topic_id' ";
-			$data .= ", user_id = '{$_SESSION['login_id']}' ";
-			$save = $this->db->query("INSERT INTO forum_comments set ".$data);
-		}else{
-			$save = $this->db->query("UPDATE forum_comments set ".$data." where id=".$id);
+	
+	function save_comment() {
+		// Start output buffering to catch any unexpected output
+		ob_start();
+	
+		try {
+			extract($_POST);
+			$comment = htmlentities(str_replace("'", "&#x2019;", $comment));
+			
+			$sql = "comment = '$comment' ";
+		
+			if (empty($id)) {
+				// Creating a new comment
+				$sql .= ", topic_id = '$topic_id' ";
+				$sql .= ", user_id = '{$_SESSION['login_id']}' ";
+				$save = $this->db->query("INSERT INTO forum_comments SET $sql");
+			} else {
+				// Updating an existing comment
+				$save = $this->db->query("UPDATE forum_comments SET $sql WHERE id = $id");
+			}
+		
+			if ($save) {
+				$response = ['status' => 'success', 'message' => 'Comment saved successfully'];
+			} else {
+				$response = ['status' => 'error', 'message' => 'Failed to save comment'];
+			}
+		} catch (Exception $e) {
+			$response = ['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()];
 		}
-		if($save)
-			return 1;
+	
+		// Clear the output buffer and discard any output
+		ob_end_clean();
+	
+		// Send JSON response
+		header('Content-Type: application/json');
+		echo json_encode($response);
+		exit;
 	}
+	
+	
 	function delete_comment(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM forum_comments where id = ".$id);

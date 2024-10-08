@@ -1,5 +1,10 @@
 <?php include('db_connect.php');?>
-
+<style>
+.card-header {
+    background: #FFD63E;
+    border-radius: 20px;
+}
+</style>
 <div class="container-fluid">
 	
 	<div class="col-lg-12">
@@ -16,7 +21,7 @@
 				<div class="card">
 					<div class="card-header">
 						<b>List of Events</b>
-						<span class="float:right"><a class="btn btn-primary btn-block btn-sm col-sm-2 float-right" href="index.php?page=manage_event" id="new_event">
+						<span class="float:right"><a class="btn btn-success btn-block btn-sm col-sm-2 float-right" href="index.php?page=manage_event" id="new_event">
 					<i class="fa fa-plus"></i> New Entry
 				</a></span>
 					</div>
@@ -66,9 +71,9 @@
 										 <p class="text-right"><?php echo $commits ?></p>
 									</td>
 									<td class="text-center">
-										<button class="btn btn-sm btn-outline-primary view_event" type="button" data-id="<?php echo $row['id'] ?>" >View</button>
-										<button class="btn btn-sm btn-outline-primary edit_event" type="button" data-id="<?php echo $row['id'] ?>" >Edit</button>
-										<button class="btn btn-sm btn-outline-danger delete_event" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
+										<button class="btn btn-sm btn-primary view_event" type="button" data-id="<?php echo $row['id'] ?>" >View</button>
+										<button class="btn btn-sm btn-primary edit_event" type="button" data-id="<?php echo $row['id'] ?>" >Edit</button>
+										<button class="btn btn-sm btn-danger delete_event" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
 									</td>
 								</tr>
 								<?php endwhile; ?>
