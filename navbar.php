@@ -109,8 +109,8 @@ include 'header.php';
       <div class="container-fluid">
         <div class="navbar-brand">
           <!-- Logo Section -->
-          <a href="main_menu.php">
-            <img src="assets/img/Logo.png" alt="Logo" class="img-fluid">
+          <a href="index.php?page=home">
+            <img src="assets/img/logo-qc.png" alt="Logo" class="img-fluid">
           </a>
           <!-- Title Section -->
           <div class="title-section">

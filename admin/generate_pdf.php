@@ -11,12 +11,27 @@ class MYPDF extends TCPDF {
     // Page header
     public function Header() {
         // Logo
-        $image_file = 'assets/img/logo.png'; // Update this path to your logo file
-        $logo_width = 70; // Width of the logo
+        $image_file = 'assets/img/logo.png';
+        $logo_width = 30; // Adjusted logo width
         $page_width = $this->getPageWidth();
-        $logo_x = ($page_width - $logo_width) / 2; // Center the logo
+        $logo_x = 10; // Logo positioned to the left
 
         $this->Image($image_file, $logo_x, 10, $logo_width, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+        // Set font
+        $this->SetFont('helvetica', 'B', 12);
+
+        // Title
+        $this->SetXY($logo_x + $logo_width + 5, 10);
+        $this->Cell(0, 10, 'St. Paul University Quezon City', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+
+        // Subtitle
+        $this->SetFont('helvetica', 'B', 10);
+        $this->SetXY($logo_x + $logo_width + 5, 20);
+        $this->Cell(0, 10, 'ALUMNI TRACKING SYSTEM', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+
+        // Draw a line
+        $this->Line(10, 32, $page_width - 10, 32);
     }
 
     // Page footer

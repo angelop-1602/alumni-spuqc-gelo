@@ -1,10 +1,24 @@
 <?php include 'admin/db_connect.php'; ?>
+
 <?php
-if (isset($_GET['id'])) {
-    $qry = $conn->query("SELECT * FROM career WHERE id=" . $_GET['id'])->fetch_array();
-    foreach ($qry as $k => $v) {
-        $$k = $v;
+// Sanitize the input from the query parameter
+$career_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($career_id > 0) {
+    $qry = $conn->query("SELECT * FROM career WHERE id = $career_id");
+    
+    if ($qry && $qry->num_rows > 0) {
+        $career_data = $qry->fetch_array(MYSQLI_ASSOC);
+        foreach ($career_data as $k => $v) {
+            $$k = htmlspecialchars($v); // Escape output to prevent XSS
+        }
+    } else {
+        echo "<p>Career opportunity not found.</p>";
+        exit;
     }
+} else {
+    echo "<p>Invalid request.</p>";
+    exit;
 }
 ?>
 
@@ -84,10 +98,10 @@ if (isset($_GET['id'])) {
     // Initialize jqte editor
     $('.text-jqte').jqte();
 
-    // Handle form submission
+    // Handle form submission (if you have a form)
     $('#manage-career').submit(function(e) {
         e.preventDefault();
-        start_load();
+        start_load(); // Ensure this function is defined elsewhere
         $.ajax({
             url: 'admin/ajax.php?action=save_career',
             method: 'POST',

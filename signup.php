@@ -12,15 +12,6 @@ include 'admin/db_connect.php';
     }
 </style>
 <div class="container">
-    <div class="container-fluid">
-        <div class="row h-100 align-items-center justify-content-center text-center">
-            <div class="col-lg-8 align-self-end mb-4 page-title">
-                <h3 class=" ">Create Account</h3>
-                <hr class="divider my-4" />
-                <div class="col-md-12 mb-2 justify-content-center"></div>
-            </div>
-        </div>
-    </div>
     <div class="container-fluid mt-3 pt-2">
         <div class="col-lg-12">
             <div class="card mb-4">
@@ -69,19 +60,13 @@ include 'admin/db_connect.php';
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-md-5">
-                                        <label for="" class="control-label">Currently Connected To</label>
-                                        <textarea name="connected_to" id="" cols="30" rows="3"
-                                            class="form-control"></textarea>
-                                    </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-4">
                                         <label for="" class="control-label">Image</label>
                                         <input type="file" class="form-control" name="img"
                                             onchange="displayImg(this,$(this))">
                                         <img src="" alt="" id="cimg">
                                     </div>
-                                </div>
-                                <div class="row">
+                                
                                     <div class="col-md-4">
                                         <label for="" class="control-label">Email</label>
                                         <input type="email" class="form-control" name="email" required>
@@ -96,7 +81,7 @@ include 'admin/db_connect.php';
                                 <div class="row form-group">
                                     <div class="col-md-4">
                                         <label for="" class="control-label">Student ID</label>
-                                        <input type="text" class="form-control" name="studentId" required>
+                                        <input type="text" class="form-control" name="studentId">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="" class="control-label">Home Address</label>
@@ -131,23 +116,12 @@ include 'admin/db_connect.php';
 
                                 <div class="row form-group">
                                     <div class="col-md-6">
-                                        <label for="" class="control-label">LinkedIn Profile</label>
-                                        <input type="url" class="form-control" name="linkedin">
-                                    </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <div class="col-md-6">
                                         <label for="" class="control-label">Preferred Contact Method</label>
                                         <select class="custom-select" name="contact_method">
                                             <option>Email</option>
                                             <option>Phone</option>
                                             <option>Mail</option>
                                         </select>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <label for="" class="control-label">Interests/Hobbies</label>
-                                        <textarea name="interests" class="form-control" rows="3"></textarea>
                                     </div>
                                 </div>
 
@@ -158,7 +132,7 @@ include 'admin/db_connect.php';
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="control-label">Year Completed</label>
-                                        <input type="text" class="form-control" name="kinderYear" required>
+                                        <input type="text" class="form-control datepickerY" name="kinderYear" required>
                                     </div>
                                 </div>
 
@@ -169,7 +143,7 @@ include 'admin/db_connect.php';
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="control-label">Year Completed</label>
-                                        <input type="text" class="form-control" name="gradeSchoolYear" required>
+                                        <input type="text" class="form-control datepickerY" name="gradeSchoolYear" required>
                                     </div>
                                 </div>
 
@@ -181,18 +155,18 @@ include 'admin/db_connect.php';
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="control-label">Year Completed</label>
-                                        <input type="text" class="form-control" name="juniorHighSchoolYear" required>
+                                        <input type="text" class="form-control datepickerY" name="juniorHighSchoolYear" required>
                                     </div>
                                 </div>
 
                                 <div class="row form-group">
                                     <div class="col-md-6">
                                         <label for="" class="control-label">College - School/s Attended</label>
-                                        <input type="text" class="form-control" name="college" required>
+                                        <input type="text" class="form-control" name="college" >
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="control-label">Year Graduated</label>
-                                        <input type="text" class="form-control" name="collegeYear" required>
+                                        <input type="text" class="form-control datepickerY" name="collegeYear" >
                                     </div>
                                 </div>
 
@@ -203,7 +177,7 @@ include 'admin/db_connect.php';
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="control-label">Year Graduated</label>
-                                        <input type="text" class="form-control" name="postGradYear">
+                                        <input type="text" class="form-control datepickerY" name="postGradYear">
                                     </div>
                                 </div>
 
@@ -390,7 +364,7 @@ include 'admin/db_connect.php';
             type: 'POST',
             success: function (resp) {
                 if (resp == 1) {
-                    location.replace('index.php');
+                    location.replace('index.php?page=home');
                 } else {
                     $('#msg').html('<div class="alert alert-danger">' + resp + '</div>');
                     end_load();

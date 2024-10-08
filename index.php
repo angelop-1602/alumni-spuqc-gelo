@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>St. Paul University Quezon</title>
-    <link rel="stylesheet" href="path/to/your/css/style.css"> <!-- Link to your CSS -->
-    <script src="path/to/jquery.js"></script> <!-- Include jQuery -->
-    <link rel="stylesheet" href="path/to/bootstrap.css"> <!-- Include Bootstrap CSS -->
     <style>
         body {
             font-family: "Poppins";
@@ -81,7 +78,7 @@
             $_SESSION['system'][$key] = $value;
         }
     }
-    ob_end_flush();
+    
 
     include 'header.php';
     if (isset($_SESSION['login_id'])): 
@@ -89,37 +86,44 @@
     endif;
     ?>
 
-    <div class="main-content">
-        <div class="container">
-            <?php 
-            // Get current page
-            $page = isset($_GET['page']) ? $_GET['page'] : "not_member"; 
+<div class="main-content">
+    <div class="container">
+        <?php 
+        // Get current page
+        $page = isset($_GET['page']) ? $_GET['page'] : "not_member"; 
 
-            // Define pages that can be accessed without logging in
-            $public_pages = ['not_member','about', 'contact', 'signup', 'login']; 
-            
-            // Check if user is not logged in
-            if (!isset($_SESSION['login_id'])): 
-                // If user is not logged in, set 'not_member' as the current page
-            endif; 
-            ?>
+        // Define pages that can be accessed without logging in
+        $public_pages = ['not_member', 'signup', 'login']; 
 
-            <div class="content">
-                <?php 
-                // Load the requested page for logged-in users or the not_member page for non-logged-in users
-                if (in_array($page, $public_pages) || isset($_SESSION['login_id'])): 
-                    include "{$page}.php"; 
-                else: ?>
-                    <div class="not-member-container">
-                        <h2>Access Denied</h2>
-                        <p>You need to log in to view this page.</p>
-                        <a href="#" class="login-action">Login</a>
-                        <a href="index.php?page=signup" class="signup-link">Create New Account</a>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
+        // Check if user is logged in
+        if (isset($_SESSION['login_id'])): 
+            // User is logged in, load the requested page or default to home
+            if (in_array($page, $public_pages)):
+                // If trying to access a public page, redirect to the home page
+                header('Location: index.php?page=home');
+                exit; // Ensure no further code is executed after the redirect
+            else:
+                // Load the requested page for logged-in users
+                include "{$page}.php"; 
+            endif;
+        else: 
+            // User is not logged in, restrict access to public pages
+            if (in_array($page, $public_pages)):
+                include "{$page}.php"; 
+            else: ?>
+                <div class="not-member-container">
+                    <h2>Access Denied</h2>
+                    <p>You need to log in to view this page.</p>
+                    <a href="#" class="login-action">Login</a>
+                    <a href="index.php?page=signup" class="signup-link">Create New Account</a>
+                </div>
+            <?php endif; 
+        endif; 
+        ob_end_flush();
+        ?>
     </div>
+</div>
+
 
     <!-- Login Modal -->
     <div class="modal fade" id="uni_modal" tabindex="-1" role="dialog" aria-labelledby="uniModalLabel" aria-hidden="true">

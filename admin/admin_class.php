@@ -130,7 +130,7 @@ Class Action {
 		// Check if username already exists
 		$chk = $this->db->query("SELECT * FROM users WHERE username = '$email'")->num_rows;
 		if ($chk > 0) {
-			return 2; // Username already exists
+			return "Username is already used!"; // Username already exists
 		}
 	
 		// Insert user data
@@ -149,7 +149,6 @@ Class Action {
 						 batch = '$batch', 
 						 course_id = '$course_id', 
 						 email = '$email', 
-						 connected_to = '$connected_to', 
 						 currentlyEmployed = '$currentlyEmployed',
 						 status = '1',
 						 img = 'img',
@@ -158,9 +157,7 @@ Class Action {
 						 mobileNumber = '$mobileNumber',
 						 occupation = '$occupation', 
 						 company = '$company', 
-						 linkedin = '$linkedin',
 						 contact_method = '$contact_method',
-						 interests = '$interests',
 						 kinderSchool = '$kinderSchool', 
 						 kinderYear = '$kinderYear',
 						 gradeSchool = '$gradeSchool', 
@@ -350,6 +347,14 @@ Class Action {
 			return 1;
 		}
 	}
+	
+	function delete_alumni() {
+        extract($_POST);
+        $delete = $this->$conn->query("DELETE FROM alumnus_bio where id = ".$id);
+        if($delete)
+            return 1;
+    }
+
 	
 	function save_career(){
 		extract($_POST);

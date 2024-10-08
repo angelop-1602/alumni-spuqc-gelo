@@ -1,17 +1,35 @@
 <?php include 'admin/db_connect.php'; ?>
+
 <?php
 if (isset($_GET['id'])) {
-    $qry = $conn->query("SELECT * FROM events WHERE id= " . $_GET['id']);
-    foreach ($qry->fetch_array() as $k => $val) {
-        $$k = $val;
+    $event_id = intval($_GET['id']); // Ensure the ID is an integer for security
+    $qry = $conn->query("SELECT * FROM events WHERE id = $event_id");
+    
+    if ($qry) {
+        $data = $qry->fetch_assoc(); // Use fetch_assoc for clarity
+        if ($data) {
+            foreach ($data as $k => $val) {
+                $$k = htmlspecialchars($val); // Escape output to prevent XSS
+            }
+            $commits = $conn->query("SELECT user_id FROM event_commits WHERE event_id = $event_id");
+            $cids = array();
+            while ($row = $commits->fetch_assoc()) {
+                $cids[] = $row['user_id'];
+            }
+        } else {
+            echo "<p>No event found.</p>"; // Handle case where no event is found
+            exit; // Stop further execution
+        }
+    } else {
+        echo "Error: " . $conn->error; // Handle database errors
+        exit; // Stop further execution
     }
-    $commits = $conn->query("SELECT * FROM event_commits WHERE event_id = $id");
-    $cids = array();
-    while ($row = $commits->fetch_assoc()) {
-        $cids[] = $row['user_id'];
-    }
+} else {
+    echo "<p>Invalid request.</p>"; // Handle case where 'id' is not set
+    exit; // Stop further execution
 }
 ?>
+
 <style type="text/css">
     body {
         margin: 0; /* Remove body margin */
@@ -19,36 +37,16 @@ if (isset($_GET['id'])) {
     }
     .imgs {
         margin: 0.5em;
-        max-width: calc(100%);
-        max-height: calc(100%);
-    }
-    .imgs img {
-        max-width: calc(100%);
-        max-height: calc(100%);
-        cursor: pointer;
+        max-width: 100%;
+        max-height: 100%;
     }
     #imagesCarousel, #imagesCarousel .carousel-inner, #imagesCarousel .carousel-item {
         height: 40vh !important;
         background: black;
     }
-    #imagesCarousel {
-        margin-left: unset !important;
-    }
-    #imagesCarousel .carousel-item.active {
-        display: flex !important;
-    }
-    #imagesCarousel .carousel-item-next {
-        display: flex !important;
-    }
-    #imagesCarousel .carousel-item img {
-        margin: auto;
-        margin-top: unset;
-        margin-bottom: unset;
-    }
     #imagesCarousel img {
-        width: calc(100%) !important;
+        width: 100% !important;
         height: auto !important;
-        max-width: calc(100%) !important;
         cursor: pointer;
     }
     #banner {
@@ -56,7 +54,7 @@ if (isset($_GET['id'])) {
         justify-content: center;
     }
     #banner img {
-        max-width: calc(100%);
+        max-width: 100%;
         max-height: 50vh;
         cursor: pointer;
     }
@@ -75,24 +73,21 @@ if (isset($_GET['id'])) {
 <div class="container">
     <div class="row h-100 align-items-center justify-content-center text-center">
         <div class="col-lg-4 align-self-end mb-4 pt-2 page-title">
-            <h4 class="text-center"><b><?php echo ucwords($title) ?></b></h4>
+            <h4 class="text-center"><b><?php echo ucwords($title); ?></b></h4>
         </div>
     </div>
 </div>
-
-<section></section>
 
 <div class="container">
     <div class="col-lg-12">
         <div class="card mt-4 mb-4">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-12"></div>
-                    <div class="col-md-12" id="content">
-                        <p class="">
-                            <p><b><i class="fa fa-calendar"></i> <?php echo date("F d, Y h:i A", strtotime($schedule)) ?></b></p>
-                            <?php echo html_entity_decode($content); ?>
+                    <div class="col-md-12">
+                        <p class="mb-3">
+                            <b><i class="fa fa-calendar"></i> <?php echo date("F d, Y h:i A", strtotime($schedule)); ?></b>
                         </p>
+                        <?php echo html_entity_decode($content); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -115,27 +110,32 @@ if (isset($_GET['id'])) {
 </div>
 
 <script>
-    $('#imagesCarousel img,#banner img').click(function () {
-        viewer_modal($(this).attr('src'));
+    $('#imagesCarousel img, #banner img').click(function () {
+        viewer_modal($(this).attr('src')); // Assuming viewer_modal is defined elsewhere
     });
 
     $('#participate').click(function () {
-        _conf("Are you sure to commit that you will participate in this event?", "participate", [<?php echo $id ?>], 'mid-large');
+        _conf("Are you sure you want to commit to participating in this event?", "participate", [<?php echo $event_id; ?>], 'mid-large');
     });
 
-    function participate($id) {
-        start_load();
+    function participate(id) {
+        start_load(); // Assuming this function is defined elsewhere
         $.ajax({
             url: 'admin/ajax.php?action=participate',
             method: 'POST',
-            data: { event_id: $id },
+            data: { event_id: id },
             success: function (resp) {
                 if (resp == 1) {
-                    alert_toast("Data successfully deleted", 'success');
+                    alert_toast("Successfully committed to participate.", 'success');
                     setTimeout(function () {
-                        location.reload();
+                        location.reload(); // Reload the page after saving
                     }, 1500);
+                } else {
+                    alert_toast("Failed to commit participation.", 'danger'); // Alert error message
                 }
+            },
+            error: function () {
+                alert_toast("An error occurred while processing your request.", 'danger'); // Alert error message
             }
         });
     }

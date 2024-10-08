@@ -2,6 +2,7 @@
 <html lang="en">
 	
 <?php session_start(); ?>
+<?php include "db_connect.php"?>
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -10,8 +11,29 @@
  	
 
 <?php
-  if(!isset($_SESSION['login_id']))
+  if (!isset($_SESSION['login_id'])) {
     header('location:login.php');
+    exit();
+}
+
+// Fetch user type based on logged-in user ID
+$userId = $_SESSION['login_id'];
+$userQuery = $conn->query("SELECT type FROM users WHERE id = '$userId' LIMIT 1");
+
+if ($userQuery->num_rows > 0) {
+    $userData = $userQuery->fetch_assoc();
+    $_SESSION['user_type'] = $userData['type'];
+
+    if ($_SESSION['user_type'] !== '1') {
+        header('location:login.php');
+        exit();
+    }
+} else {
+    session_destroy();
+    header('location:login.php');
+    exit();
+}
+
  include('header.php'); 
  include ('topbar.php'); 
  // include('./auth.php'); 

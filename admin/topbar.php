@@ -106,7 +106,7 @@ include 'header.php';
       <!-- Logo Section -->
       <div class="col-md-2 text-center">
         <a href="index.php?page=home">
-          <img src="assets/img/logo.png" alt="Logo" class="img-fluid">
+          <img src="assets/img/logo-qc.png" alt="Logo" class="img-fluid">
         </a>
       </div>
 
@@ -133,6 +133,9 @@ include 'header.php';
         </li>
         <li class="nav-item mx-1">
           <a class="nav-link px-2" href="index.php?page=articles">Article</a>
+        </li>
+        <li class="nav-item mx-1">
+          <a class="nav-link px-2" href="index.php?page=events">Events</a>
         </li>
         <li class="nav-item mx-1">
           <a class="nav-link px-2" href="index.php?page=courses">Course List</a>

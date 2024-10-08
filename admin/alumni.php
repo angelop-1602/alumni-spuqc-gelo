@@ -71,8 +71,7 @@
                                 <th class="">Year of Graduation</th>
                                 <th class="">Email</th>
                                 <th class="">Phone Number</th>
-                                <th class="">Occupation</th>
-                                <th class="">Company</th>
+                                <th class="">Employment</th>
                                 <th class="">Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -80,22 +79,22 @@
                         <tbody id="alumniList">
                             <?php 
                             $i = 1;
-                            $alumni = $conn->query("SELECT a.*, c.course, CONCAT(a.lastname, ', ', a.firstname, ' ', a.middlename) as name 
+                            $alumni = $conn->query("SELECT a.*, c.course, CONCAT(a.lastname, ', ', a.firstname, ' ', a.middlename) as name,
+                                                    CASE WHEN a.company != '' OR a.occupation != '' THEN 1 ELSE 0 END as employed
                                                     FROM alumnus_bio a 
                                                     INNER JOIN courses c ON c.id = a.course_id 
                                                     ORDER BY CONCAT(a.lastname, ', ', a.firstname, ' ', a.middlename) ASC");
-                            while ($row = $alumni->fetch_assoc()): // Correctly fetch data into $row
+                            while ($row = $alumni->fetch_assoc()):
                             ?>
                             <tr>
                                 <td class="text-center"><?php echo $i++; ?></td>
                                 <td class="text-center">
                                     <div class="avatar">
                                         <?php 
-                                        // Debugging: Check the length of the image data
                                         if (!empty($row['img'])) {
                                             echo '<img src="data:image/png;base64,'.base64_encode($row['img']).'" alt="Avatar">'; 
                                         } else {
-                                            echo 'No image available'; // Debugging message
+                                            echo 'No image available';
                                         }
                                         ?>
                                     </div>
@@ -116,10 +115,7 @@
                                     <p><b><?php echo $row['mobileNumber']; ?></b></p>
                                 </td>
                                 <td>
-                                    <p><b><?php echo $row['occupation']; ?></b></p>
-                                </td>
-                                <td>
-                                    <p><b><?php echo $row['company']; ?></b></p>
+                                <p><b><?php echo $row['employed'] == 1 ? 'Employed' : 'Unemployed'; ?></b></p>
                                 </td>
                                 <td class="text-center">
                                     <?php if ($row['status'] == 1): ?>
@@ -239,27 +235,26 @@ $(document).ready(function() {
         uni_modal("Bio", "view_alumni.php?id=" + $(this).data('id'), 'mid-large');
     });
 
-    // Delete Alumni
-    $(document).on('click', '.delete_alumni', function() {
-        _conf("Are you sure to delete this alumni?", "delete_alumni", [$(this).data('id')]);
+    $(document).on('click', '.delete_alumni', function(){
+        _conf("Are you sure to delete this alumni?", "delete_alumni", [$(this).attr('data-id')]);
     });
 
     // Delete alumni function
-    function delete_alumni(id) {
-        start_load();
+    function delete_alumni($id) {
+        start_load()
         $.ajax({
-            url: 'ajax.php?action=delete_alumni',
-            method: 'POST',
-            data: { id: id },
-            success: function(resp) {
-                if (resp == 1) {
-                    alert_toast("Alumni successfully deleted.", 'success');
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1500);
+            url:'handle_alumni_delete.php',
+            method:'POST',
+            data:{id:$id, action:'delete_alumni'},
+            success:function(resp){
+                if(resp == 1){
+                    alert_toast("Data successfully deleted",'success')
+                    setTimeout(function(){
+                        location.reload()
+                    },1500)
                 }
             }
-        });
+        })
     }
 });
 </script>

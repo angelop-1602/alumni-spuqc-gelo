@@ -3,33 +3,11 @@ include 'admin/db_connect.php';
 
 ?>
 <style>
-    .masthead{
-        min-height: 23vh !important;
-        height: 23vh !important;
-    }
-     .masthead:before{
-        min-height: 23vh !important;
-        height: 23vh !important;
-    }
     img#cimg{
         max-height: 10vh;
         max-width: 6vw;
     }
 </style>
-        <header class="masthead">
-            <div class="container-fluid h-100">
-                <div class="row h-100 align-items-center justify-content-center text-center">
-                    <div class="col-lg-8 align-self-end mb-4 page-title">
-                    	<h3 class=" ">Manage Account</h3>
-                        <hr class="divider my-4" />
-
-                    <div class="col-md-12 mb-2 justify-content-center">
-                    </div>                        
-                    </div>
-                    
-                </div>
-            </div>
-        </header>
             <div class="container mt-3 pt-2">
                <div class="col-lg-12">
                    <div class="card mb-4">
@@ -81,10 +59,13 @@ include 'admin/db_connect.php';
                                                 <label for="" class="control-label">Currently Connected To</label>
                                                 <textarea name="connected_to" id="" cols="30" rows="3" class="form-control"><?php echo $_SESSION['bio']['connected_to'] ?></textarea>
                                             </div>
+                                            <?php 
+$avatar = !empty($_SESSION['bio']['avatar']) ? $_SESSION['bio']['avatar'] : 'default_avatar.png'; // Use a default image if none is set
+?>
                                             <div class="col-md-5">
                                                 <label for="" class="control-label">Image</label>
                                                 <input type="file" class="form-control" name="img" onchange="displayImg(this,$(this))">
-                                                <img src="admin/assets/uploads/<?php echo $_SESSION['bio']['avatar'] ?>" alt="" id="cimg">
+                                                <img src="admin/assets/uploads/<?php echo $avatar; ?>" alt="Profile Picture" id="cimg">
 
                                             </div>  
                                         </div>
@@ -138,23 +119,12 @@ include 'admin/db_connect.php';
 
                                         <div class="row form-group">
                                             <div class="col-md-6">
-                                                <label for="" class="control-label">LinkedIn Profile</label>
-                                                <input type="url" class="form-control" name="linkedin" value="<?php echo $_SESSION['bio']['linkedin'] ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="row form-group">
-                                            <div class="col-md-6">
                                                 <label for="" class="control-label">Preferred Contact Method</label>
                                                 <select class="custom-select" name="contact_method">
                                                     <option <?php echo $_SESSION['bio']['contact_method'] == 'Email' ? 'selected' : '' ?>>Email</option>
                                                     <option <?php echo $_SESSION['bio']['contact_method'] == 'Phone' ? 'selected' : '' ?>>Phone</option>
                                                     <option <?php echo $_SESSION['bio']['contact_method'] == 'Mail' ? 'selected' : '' ?>>Mail</option>
                                                 </select>
-                                            </div>
-                                            <div class="col-md-10">
-                                                <label for="" class="control-label">Interests/Hobbies</label>
-                                                <textarea name="interests" class="form-control" rows="3"><?php echo $_SESSION['bio']['interests'] ?></textarea>
                                             </div>
                                         </div>
 
@@ -203,17 +173,6 @@ include 'admin/db_connect.php';
                                         </div>
 
                                         <div class="row form-group">
-                                            <div class="col-md-6">
-                                                <label for="" class="control-label">Post-Graduate - School/s Attended</label>
-                                                <input type="text" class="form-control" name="postGrad" value="<?php echo $_SESSION['bio']['postGrad'] ?>">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="" class="control-label">Year Graduated</label>
-                                                <input type="text" class="form-control" name="postGradYear" value="<?php echo $_SESSION['bio']['postGradYear'] ?>">
-                                            </div>
-                                        </div>
-
-                                        <div class="row form-group">
                                             <div class="col-md-12">
                                                 <label for="" class="control-label">Program/s or Grade Level/s Completed in SPUQC</label>
                                                 <p>Please select at most 6 options:</p>
@@ -237,11 +196,12 @@ include 'admin/db_connect.php';
                                                         "IGS - All Women MBA", "IGS - Teacher Certificate Program",
                                                         "IGS - Certificate in Values Education"
                                                     ];
-                                                    foreach ($programs as $program) {
-                                                        $checked = in_array($program, $_SESSION['bio']['programs']) ? 'checked' : '';
-                                                        echo "<label><input type='checkbox' name='programs[]' value='$program' $checked> $program</label><br>";
-                                                    }
-                                                    ?>
+                                                    $selectedPrograms = json_decode($_SESSION['bio']['programs'], true); // Decode the JSON string to an array
+foreach ($programs as $program) {
+    $checked = (is_array($selectedPrograms) && in_array($program, $selectedPrograms)) ? 'checked' : '';
+    echo "<label><input type='checkbox' name='programs[]' value='$program' $checked> $program</label><br>";
+}
+?>
                                                 </div>
                                             </div>
                                         </div>
