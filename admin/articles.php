@@ -17,6 +17,13 @@
     background: #FFD63E;
     border-radius: 20px;
 }
+.truncate {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3.6em; /* Control the height to fit a specific number of lines */ /* Adjust the line height to your font size */
+}
+
 </style>
 	<div class="col-lg-12">
 		<div class="row mb-4 mt-4">
@@ -68,9 +75,8 @@
 									<td class="">
 										 <p><b><?php echo ucwords($row['title']) ?></b></p>
 									</td>
-									<td class="">
-										 <p><b><?php echo ucwords($row['content']) ?></b></p>
-										 
+									<td class="truncate">
+									    <p><b><?php echo ucwords($row['content']) ?></b></p>
 									</td>
 									<td class="text-center">
 										<button class="btn btn-sm btn-outline-primary view_career" type="button" data-id="<?php echo $row['id'] ?>" >View</button>

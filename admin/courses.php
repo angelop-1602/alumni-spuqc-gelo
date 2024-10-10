@@ -90,34 +90,39 @@
 <script>
 	
 	$('#manage-course').submit(function(e){
-		e.preventDefault()
-		start_load()
-		$.ajax({
-			url:'ajax.php?action=save_course',
-			data: new FormData($(this)[0]),
-		    cache: false,
-		    contentType: false,
-		    processData: false,
-		    method: 'POST',
-		    type: 'POST',
-			success:function(resp){
-				if(resp==1){
-					alert_toast("Data successfully added",'success')
-					setTimeout(function(){
-						location.reload()
-					},1500)
+    e.preventDefault();
+    start_load();
+    $.ajax({
+        url: 'ajax.php?action=save_course',
+        data: new FormData($(this)[0]),
+        cache: false,
+        contentType: false,
+        processData: false,
+        method: 'POST',
+        type: 'POST',
+        success:function(resp){
+            if(resp == 1){
+                alert_toast("Data successfully added", 'success');
+                setTimeout(function(){
+                    location.reload();
+                }, 1500);
+            } else if(resp == 2){
+                alert_toast("Data successfully updated", 'success');
+                setTimeout(function(){
+                    location.reload();
+                }, 1500);
+            } else {
+				console.log(resp);
+                alert_toast("An error occurred. Please try again.", 'error');
+            }
+        },
+        error: function(err){
+            console.log(err);
+            alert_toast("An unexpected error occurred.", 'error');
+        }
+    });
+});
 
-				}
-				else if(resp==2){
-					alert_toast("Data successfully updated",'success')
-					setTimeout(function(){
-						location.reload()
-					},1500)
-
-				}
-			}
-		})
-	})
 	$('.edit_course').click(function(){
 		start_load()
 		var cat = $('#manage-course')

@@ -35,10 +35,17 @@ if(isset($_GET['id'])){
 		</div>
 		<div class="row form-group">
 			<div class="col-md-12">
+				<label class="control-label">Links</label>
+				<input type="text" name="links" class="form-control" value="<?php echo isset($links) ? $links : '' ?>">
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-12">
 				<label class="control-label">Description</label>
 				<textarea name="description" class="text-jqte"><?php echo isset($description) ? $description : '' ?></textarea>
 			</div>
 		</div>
+		
 		<button type="submit" class="btn btn-primary">Save</button>
 	</form>
 </div>

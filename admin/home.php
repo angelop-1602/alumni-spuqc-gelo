@@ -46,12 +46,20 @@ function safe_json_encode($value){
 include ("header.php");
 ?>
 
-<body>
+
+<style>
+    .row{
+        margin:auto;
+    }
+    .card-header {
+    background: #FFD63E;
+    border-radius: 20px;
+}
+</style>
     <div class="row mt-3">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-body">
-                    <?php echo "Welcome back " . $_SESSION['login_name'] . "!"; ?>
+                <div class="card-body "><?php echo "Welcome back " . $_SESSION['login_name'] . "!"; ?>
                     <hr>
                     <div class="row">
                         <!-- Basic Metrics -->
@@ -92,50 +100,39 @@ include ("header.php");
                             </div>
                         </div>
                     </div>  
+                    <div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Alumni by Batch</h5>
+                <div class="chart-container">
+                    <canvas id="alumniByBatchChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Alumni by Program</h5>
+                <div class="chart-container">
+                    <canvas id="alumniByCourseChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Employement of the Alumni</h5>
+                <div class="chart-container">
+                    <canvas id="currentlyEmployedChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    <!-- Advanced Metrics -->
-                    <div class="row mt-4">
-                        <div class="col-md-3 mb-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>Alumni by Gender</h5>
-                                    <div class="chart-container">
-                                        <canvas id="alumniByGenderChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>Alumni by Batch</h5>
-                                    <div class="chart-container">
-                                        <canvas id="alumniByBatchChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>Alumni by Program</h5>
-                                    <div class="chart-container">
-                                        <canvas id="alumniByCourseChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5>Currently Employed</h5>
-                                    <div class="chart-container">
-                                        <canvas id="currentlyEmployedChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="row mt-4">
                         <div class="col-md-12">
@@ -162,26 +159,6 @@ include ("header.php");
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Alumni by Gender Chart
-    var ctxGender = document.getElementById('alumniByGenderChart').getContext('2d');
-    var alumniByGenderData = <?php echo safe_json_encode($alumni_by_gender); ?>;
-    var alumniByGenderChart = new Chart(ctxGender, {
-        type: 'pie',
-        data: {
-            labels: alumniByGenderData.map(item => item.gender),
-            datasets: [{
-                data: alumniByGenderData.map(item => item.count),
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                position: 'bottom',
-            }
-        }
-    });
 
     // Alumni by Batch Chart
     var ctxBatch = document.getElementById('alumniByBatchChart').getContext('2d');
@@ -257,5 +234,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-</body>
 </html>

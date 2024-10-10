@@ -45,6 +45,7 @@
 									<th class="text-center">#</th>
 									<th class="">Company</th>
 									<th class="">Job Title</th>
+									<th class="">Links</th>
 									<th class="">Posted By</th>
 									<th class="text-center">Action</th>
 								</tr>
@@ -65,6 +66,16 @@
 									</td>
 									<td class="">
 										 <p><b><?php echo ucwords($row['job_title']) ?></b></p>
+										 
+									</td>
+									<td class="">
+											<p>
+											    <b>
+											        <a href="<?php echo $row['links']; ?>" target="_blank">
+											            <?php echo $row['links']; ?>
+											        </a>
+											    </b>
+											</p>
 										 
 									</td>
 									<td class="">

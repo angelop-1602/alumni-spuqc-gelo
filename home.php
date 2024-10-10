@@ -104,9 +104,20 @@
         transition: background-color 0.3s, transform 0.2s;
         align-self: flex-end;
     }
+    
+    .btn-secondary {
+        background-color: #268e2a;
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        align-self: flex-end;
+    }
 
     .btn-primary:hover {
-        background-color: #1e6f22;
+        background-color: #268e2a;
         transform: scale(1.05);
     }
 
@@ -208,7 +219,7 @@
     color: #888; /* Light color for the date */
     font-size: 0.9em; /* Slightly smaller font for the date */
     white-space: nowrap; /* Prevent the date from wrapping */
-    margin-left: 20px; /* Add space between comment and date */
+
 }
 
 
@@ -263,12 +274,13 @@
         <button class="filter-btn" data-filter="event">Events</button>
         <button class="filter-btn" data-filter="article">Articles</button>
         <button class="filter-btn" data-filter="job">Jobs</button>
+        <button class="filter-btn" data-filter="forum-topic">Forums</button>
     </div>
     <div class="forum-topic-form">
-        <h2>Create a New Topic</h2>
+        <h2>Create a New Forum</h2>
         <input type="text" id="topic-title" placeholder="Topic Title" required>
         <textarea id="topic-description" placeholder="Enter your description..." rows="4" required></textarea>
-        <button id="submit-topic" class="btn-primary">Post Topic</button>
+        <button id="submit-topic" class="btn-primary">Post Forum</button>
     </div>
 
     <!-- Feed Content -->
@@ -299,7 +311,7 @@
             <div class="user-info">
                 <img src="assets/img/logo-qc.png" alt="User Avatar"> <!-- Placeholder for user avatar -->
                 <div>
-                    <strong>Posted by:</strong> Admin <!-- Assume there's a user_name field -->
+                    <strong>Admin</strong>  <!-- Assume there's a user_name field -->
                     <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
                 </div>
             </div>
@@ -310,16 +322,18 @@
             <div class="timestamp"><i class="fa fa-calendar"></i> <strong>Scheduled on:</strong> <?php echo date("F d, Y h:i A", strtotime($row['schedule'])); ?></div>
             <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
 
-            <!-- Check if the user has already participated -->
-            <?php if ($has_participated): ?>
-                <button class="btn-secondary" disabled>Participated</button> <!-- Disabled button -->
-            <?php else: ?>
-                <button class="btn-success participate" data-id="<?php echo $row['id']; ?>">Participate</button> <!-- Active button -->
-            <?php endif; ?>
+            <!-- Button container to hold both buttons side by side -->
+    <div class="button-container">
+        <!-- Check if the user has already participated -->
+        <?php if ($has_participated): ?>
+            <button class="btn-secondary" disabled>Participated</button> <!-- Disabled button -->
+        <?php else: ?>
+            <button class="btn-primary participate" data-id="<?php echo $row['id']; ?>">Participate</button> <!-- Active button -->
+        <?php endif; ?>
 
-            <!-- Read More Button -->
-            <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
-            <div class="identifier">Event</div> <!-- Identifier -->
+        <!-- Read More Button -->
+        <!-- <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button> -->
+    </div>
         </div>
         <?php endwhile; ?>
     </div>
@@ -342,7 +356,7 @@
             <div class="user-info">
                 <img src="assets/img/logo-qc.png" alt="User Avatar">
                 <div>
-                    <strong>Posted by:</strong> Admin
+                    <strong>Admin</strong> 
                     <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
                 </div>
             </div>
@@ -356,8 +370,7 @@
             <?php endif; ?>
 
             <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
-            <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
-            <div class="identifier">Article</div> <!-- Identifier -->
+            <!-- <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button> -->
         </div>
         <?php endwhile; ?>
     </div>
@@ -379,7 +392,7 @@
             <div class="user-info">
                 <img src="<?php echo $avatar; ?>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;"> <!-- Display avatar -->
                 <div>
-                    <strong>Posted by:</strong> <?php echo ucwords($row['name']); ?>
+                    <strong></strong> <?php echo ucwords($row['name']); ?>
                     <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
                 </div>
             </div>
@@ -387,13 +400,8 @@
             <h5><strong>Company:</strong> <?php echo ucwords($row['company']); ?></h5>
             <div class="date-text"><strong>Location:</strong> <?php echo ucwords($row['location']); ?></div>
             <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
-            <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button>
+            <!-- <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button> -->
 
-            <div class="comment-section">
-                <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>">
-                <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
-            </div>
-            <div class="identifier">Job Post</div> <!-- Identifier -->
         </div>
         <?php endwhile; ?>
     </div>
@@ -416,7 +424,7 @@
                     <img src="assets/img/default_avatar.jpg" alt="Default Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
                 <?php endif; ?>
                 <div>
-                    <strong>Posted by:</strong> <?php echo ucwords($row['name']); ?>
+                    <strong></strong> <?php echo ucwords($row['name']); ?>
                     <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
                 </div>
             </div>
@@ -443,7 +451,7 @@
                     </div>
                 <?php endwhile; ?>
             </div>
-            <div class="identifier">Forum Topic</div> <!-- Identifier -->
+
         </div>
         <?php endwhile; ?>
     </div>
@@ -534,34 +542,7 @@
                     alert('There was an error processing your request.');
                 }
             });
-        });
-        
-        $('.participate').on('click', function() {
-            var eventId = $(this).data('id');
-            var userId = <?php echo $_SESSION['login_id']; ?>;  // Assuming user is logged in and user_id is in session
-
-            // Send data to server via AJAX
-            $.ajax({
-                url: 'participate.php',
-                method: 'POST',
-                data: {
-                    event_id: eventId,
-                    user_id: userId
-                },
-                success: function(response) {
-                    if (response == 'success') {
-                        alert('You have successfully participated in the event!');
-                        // Update the button to show "Participated" and disable it
-                        $('.participate[data-id="' + eventId + '"]').text('Participated').prop('disabled', true).removeClass('btn-success').addClass('btn-secondary');
-                    } else {
-                        alert('Error: ' + response);
-                    }
-                },
-                error: function() {
-                    alert('There was an error processing your request.');
-                }
-            });
-        });
+        });       
     });
 
     function addComment(topicId) {

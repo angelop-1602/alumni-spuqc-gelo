@@ -23,6 +23,11 @@ if(isset($_GET['id'])){
 				<textarea name="description" class="text-jqte"><?php echo isset($description) ? $description : '' ?></textarea>
 			</div>
 		</div>
+		<div class="row">
+						<div class="col-md-12">
+							<button class="btn btn-sm btn-block btn-primary col-sm-2"> Save</button>
+						</div>
+					</div>
 	</form>
 </div>
 

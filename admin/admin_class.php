@@ -112,11 +112,9 @@ Class Action {
 		if($delete)
 			return 1;
 	}
+	
 	function signup() {
 		extract($_POST);
-		
-		// Check if avatar is set, if not, assign a default value
-		$avatar = isset($_FILES['avatar']) ? $_FILES['avatar']['name'] : ''; // Assuming avatar is uploaded via a file input
 	
 		// Determine employment status
 		$currentlyEmployed = isset($_POST['currentlyEmployed']) ? 1 : 0;
@@ -125,8 +123,7 @@ Class Action {
 		$data = "name = '".$firstname.' '.$lastname."' ";
 		$data .= ", username = '$email' ";
 		$data .= ", password = '".md5($password)."' ";
-		
-		
+	
 		// Check if username already exists
 		$chk = $this->db->query("SELECT * FROM users WHERE username = '$email'")->num_rows;
 		if ($chk > 0) {
@@ -141,6 +138,15 @@ Class Action {
 	
 		$uid = $this->db->insert_id;
 	
+		// Handle image upload
+		if (isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != '') {
+			// Get image content as binary
+			$img = addslashes(file_get_contents($_FILES['img']['tmp_name']));
+		} else {
+			// Use default image if no file is uploaded
+			$img = addslashes(file_get_contents('path/to/default/image.png')); // Add your default image path here
+		}
+	
 		// Prepare alumnus data
 		$alumnus_data = "firstname = '$firstname', 
 						 middlename = '$middlename', 
@@ -151,7 +157,7 @@ Class Action {
 						 email = '$email', 
 						 currentlyEmployed = '$currentlyEmployed',
 						 status = '1',
-						 img = 'img',
+						 img = '$img', 
 						 studentId = '$studentId', 
 						 homeAddress = '$homeAddress', 
 						 mobileNumber = '$mobileNumber',
@@ -171,7 +177,6 @@ Class Action {
 						 programs = '".json_encode($programs)."',
 						 consent = '$consent'";
 	
-	
 		$insert_query = "INSERT INTO alumnus_bio SET $alumnus_data"; // Print the SQL query for debugging
 		$save_alumnus = $this->db->query($insert_query);
 		if (!$save_alumnus) {
@@ -186,6 +191,7 @@ Class Action {
 		}
 		return 0; // Failure
 	}
+	
 	
 	function update_account() {
 		extract($_POST);
@@ -282,14 +288,21 @@ Class Action {
 	function save_course(){
 		extract($_POST);
 		$data = " course = '$course' ";
-			if(empty($id)){
-				$save = $this->db->query("INSERT INTO courses set $data");
-			}else{
-				$save = $this->db->query("UPDATE courses set $data where id = $id");
+		if(empty($id)){
+			$save = $this->db->query("INSERT INTO courses set $data");
+			if($save){
+				return 1; // Return 1 for successful insert
 			}
-		if($save)
-			return 1;
+		} else {
+			$save = $this->db->query("UPDATE courses set $data where id = $id");
+			if($save){
+				return 2; // Return 2 for successful update
+			}
+		}
+		return 0; // Return 0 if there was an error
 	}
+	
+	
 	function delete_course(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM courses where id = ".$id);
@@ -382,7 +395,8 @@ Class Action {
 		$data .= ", job_title = '$title' ";
 		$data .= ", location = '$location' ";
 		$data .= ", description = '".htmlentities(str_replace("'","&#x2019;",$description))."' ";
-
+		$data .= ", links = '$links' ";
+		
 		if(empty($id)){
 			// echo "INSERT INTO careers set ".$data;
 		$data .= ", user_id = '{$_SESSION['login_id']}' ";
