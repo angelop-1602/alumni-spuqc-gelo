@@ -320,7 +320,7 @@
             <?php endif; ?>
             <h3><?php echo ucwords($row['title']); ?></h3>
             <div class="timestamp"><i class="fa fa-calendar"></i> <strong>Scheduled on:</strong> <?php echo date("F d, Y h:i A", strtotime($row['schedule'])); ?></div>
-            <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
+            <p class="truncate"> <?php echo strip_tags($desc); ?></p>
 
             <!-- Button container to hold both buttons side by side -->
     <div class="button-container">
@@ -338,42 +338,44 @@
         <?php endwhile; ?>
     </div>
 
-    <!-- Articles Section -->
     <div class="articles">
-        <?php
-        $article = $conn->query("SELECT * FROM article ORDER BY id DESC");
-        while ($row = $article->fetch_assoc()):
-            $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-            unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-            $desc = strtr(html_entity_decode($row['content']), $trans);
-            $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+    <?php
+    $article = $conn->query("SELECT * FROM article ORDER BY id DESC");
+    while ($row = $article->fetch_assoc()):
+        $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+        unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+        $desc = strtr(html_entity_decode($row['content']), $trans);
+        $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
 
-            // Fetch image blob and encode it as base64
-            $image_data = base64_encode($row['img']); 
-            $img_src = 'data:image/jpeg;base64,' . $image_data;
-        ?>
-        <div class="feed-card article-card">
-            <div class="user-info">
-                <img src="assets/img/logo-qc.png" alt="User Avatar">
-                <div>
-                    <strong>Admin</strong> 
-                    <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
-                </div>
+        // Fetch image blob and encode it as base64
+        $image_data = base64_encode($row['img']); 
+        $img_src = 'data:image/jpeg;base64,' . $image_data;
+    ?>
+    <div class="feed-card article-card">
+        <div class="user-info">
+            <img src="assets/img/logo-qc.png" alt="User Avatar">
+            <div>
+                <strong>Admin</strong> 
+                <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
             </div>
-            <h3><?php echo ucwords($row['title']); ?></h3>
-
-            <!-- Display article image -->
-            <?php if (!empty($row['img'])): ?>
-            <div class="article-image">
-                <img src="<?php echo $img_src; ?>" alt="<?php echo $row['title']; ?>" class="article-thumbnail">
-            </div>
-            <?php endif; ?>
-
-            <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
-            <!-- <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button> -->
         </div>
-        <?php endwhile; ?>
+        <h3><?php echo ucwords($row['title']); ?></h3>
+
+        <!-- Display article image -->
+        <?php if (!empty($row['img'])): ?>
+        <div class="article-image">
+            <img src="<?php echo $img_src; ?>" alt="<?php echo $row['title']; ?>" class="article-thumbnail">
+        </div>
+        <?php endif; ?>
+
+        <!-- Description with Read More/Read Less -->
+        <p class="description truncate" id="desc_<?php echo $row['id']; ?>">
+           <?php echo strip_tags($desc); ?>
+        </p>
+        <a href="javascript:void(0);" class="read-more" onclick="toggleDescription(<?php echo $row['id']; ?>)" id="toggle_<?php echo $row['id']; ?>">Read More</a>
     </div>
+    <?php endwhile; ?>
+</div>
 
     <!-- Jobs Section -->
     <div class="jobs">
@@ -400,6 +402,7 @@
             <h5><strong>Company:</strong> <?php echo ucwords($row['company']); ?></h5>
             <div class="date-text"><strong>Location:</strong> <?php echo ucwords($row['location']); ?></div>
             <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
+            <a href="<?php echo $row['links']; ?>" class="truncate"> <?php echo $row['links']; ?></a>
             <!-- <button class="btn-primary read_more" data-id="<?php echo $row['id']; ?>">Read More</button> -->
 
         </div>
@@ -408,49 +411,56 @@
 
     <!-- Forum Topics Section -->
     <div class="forum-topics">
-        <?php
-        $forumTopics = $conn->query("SELECT ft.*, u.name, u.img FROM forum_topics ft JOIN users u ON ft.user_id = u.id ORDER BY ft.date_created DESC");
-        while ($row = $forumTopics->fetch_assoc()):
-            $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-            unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
-            $desc = strtr(html_entity_decode($row['description']), $trans);
-            $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
-        ?>
-        <div class="feed-card forum-topic-card">
-            <div class="user-info">
-                <?php if (!empty($row['img'])): ?>
-                    <img src="data:image/jpeg;base64,<?php echo base64_encode($row['img']); ?>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
-                <?php else: ?>
-                    <img src="assets/img/default_avatar.jpg" alt="Default Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
-                <?php endif; ?>
-                <div>
-                    <strong></strong> <?php echo ucwords($row['name']); ?>
-                    <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
-                </div>
+    <?php
+    $forumTopics = $conn->query("SELECT ft.*, u.name, u.img FROM forum_topics ft JOIN users u ON ft.user_id = u.id ORDER BY ft.date_created DESC");
+    while ($row = $forumTopics->fetch_assoc()):
+        $trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+        unset($trans["\""], $trans["<"], $trans[">"], $trans["<h2"]);
+        $desc = strtr(html_entity_decode($row['description']), $trans);
+        $desc = str_replace(array("<li>", "</li>"), array("", ","), $desc);
+    ?>
+    <div class="feed-card forum-topic-card">
+        <div class="user-info">
+            <?php if (!empty($row['img'])): ?>
+                <img src="data:image/jpeg;base64,<?php echo base64_encode($row['img']); ?>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+            <?php else: ?>
+                <img src="assets/img/default_avatar.jpg" alt="Default Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+            <?php endif; ?>
+            <div>
+                <strong><?php echo ucwords($row['name']); ?></strong>
+                <div class="date-text">Posted on: <?php echo date("F d, Y", strtotime($row['date_created'])); ?></div>
             </div>
-            <h3><?php echo ucwords($row['title']); ?></h3>
-            <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
-            <strong>Comments</strong>
-            <div class="comment-section">
-                <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>"/>
-                <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
-            </div>
-            
-            <!-- Display Comments -->
-            <div class="comments-container" id="comments-container-<?php echo $row['id']; ?>">
-                <?php
-                // Fetch comments for the current topic
-                $comments = $conn->query("SELECT fc.*, u.name FROM forum_comments fc JOIN users u ON fc.user_id = u.id WHERE fc.topic_id = ".$row['id']." ORDER BY fc.date_created DESC");
-                while ($comment = $comments->fetch_assoc()):
-                ?>
-                    <div class="comment">
-                        <div class="comment-content">
-                            <strong><?php echo ucwords($comment['name']); ?></strong>: <?php echo htmlspecialchars($comment['comment']); ?>
-                        </div>
-                        <div class="date-text"><?php echo date("F d, Y", strtotime($comment['date_created'])); ?></div>
+        </div>
+        <h3><?php echo ucwords($row['title']); ?></h3>
+        <p class="truncate"><strong>Description:</strong> <?php echo strip_tags($desc); ?></p>
+        <strong>Comments</strong>
+        <div class="comment-section">
+            <input type="text" placeholder="Write a comment..." id="comment-input-<?php echo $row['id']; ?>"/>
+            <button onclick="addComment(<?php echo $row['id']; ?>)">Post</button>
+        </div>
+
+        <!-- Display Comments -->
+        <div class="comments-container" id="comments-container-<?php echo $row['id']; ?>">
+            <?php
+            // Fetch comments for the current topic
+            $comments = $conn->query("SELECT fc.*, u.name FROM forum_comments fc JOIN users u ON fc.user_id = u.id WHERE fc.topic_id = ".$row['id']." ORDER BY fc.date_created DESC");
+            while ($comment = $comments->fetch_assoc()):
+            ?>
+                <div class="comment">
+                    <div class="comment-content">
+                        <strong><?php echo ucwords($comment['name']); ?></strong>: <?php echo htmlspecialchars($comment['comment']); ?>
                     </div>
-                <?php endwhile; ?>
-            </div>
+                    <div class="date-text"><?php echo date("F d, Y", strtotime($comment['date_created'])); ?></div>
+                    
+                    <!-- Check if the logged-in user is the comment author -->
+                    <?php if ($comment['user_id'] == $_SESSION['login_id']): ?>
+                    <div class="comment-actions"> 
+                        <a href="javascript:void(0);" onclick="deleteComment(<?php echo $comment['id']; ?>)">Delete</a>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            <?php endwhile; ?>
+        </div>
 
         </div>
         <?php endwhile; ?>
@@ -462,19 +472,18 @@
     // Handle modal display
     const modal = document.getElementById("myModal");
     const span = document.getElementsByClassName("close")[0];
-
-    document.querySelectorAll('.read_more').forEach(button => {
-        button.onclick = function () {
-            const id = this.getAttribute('data-id');
-            // Load content dynamically based on the ID
-            fetch(`fetch_content.php?id=${id}`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("modalContent").innerHTML = data;
-                    modal.style.display = "block";
-                });
-        };
-    });
+    
+    function toggleDescription(id) {
+    var desc = document.getElementById("desc_" + id);
+    var toggleBtn = document.getElementById("toggle_" + id);
+    if (desc.classList.contains("truncate")) {
+        desc.classList.remove("truncate");
+        toggleBtn.innerHTML = "Read Less";
+    } else {
+        desc.classList.add("truncate");
+        toggleBtn.innerHTML = "Read More";
+    }
+}
 
     span.onclick = function () {
         modal.style.display = "none";
@@ -571,6 +580,25 @@
         .catch(error => console.error('Error:', error));
     } else {
         alert('Please enter a comment before posting.');
+    }
+}
+    
+function deleteComment(commentId) {
+    if (confirm("Are you sure you want to delete this comment?")) {
+        // AJAX call to delete the comment using ajax.php
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "admin/ajax.php?action=delete_comment", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                if (this.responseText === '1') { // Assuming the delete_comment function returns 1 on success
+                    location.reload();  // Reload the page to reflect changes
+                } else {
+                    alert("Error deleting comment.");
+                }
+            }
+        };
+        xhr.send("action=delete_comment&id=" + commentId);
     }
 }
 
